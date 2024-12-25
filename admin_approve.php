@@ -23,8 +23,7 @@ if (isset($_GET['approve'])) {
 
     if ($order) {
         // Onaylandı olarak güncelle
-        $sql_update = "UPDATE orders SET order_status = 'onaylandi' WHERE order_id = :id"; // Onay durumu güncelleme
-        echo "<script>console.log('SQL sorgusu: " . $sql_update . "');</script>"; // Konsola SQL sorgusunu yazdır
+        $sql_update = "UPDATE orders SET order_status = 'onaylandi' WHERE order_id = :id";
         $stmt_update = $conn->prepare($sql_update);
         $stmt_update->bindParam(':id', $order_id, PDO::PARAM_INT);
         
@@ -198,19 +197,13 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php if (!empty($results)): ?>
                 <?php foreach ($results as $row): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['order_number']); ?></td>
+                        <td><?php echo htmlspecialchars($row['order_id']); ?></td>
                         <td><?php echo htmlspecialchars($row['username']); ?></td>
                         <td><?php echo htmlspecialchars($row['urun_adi']); ?></td>
                         <td><?php echo htmlspecialchars($row['quantity']); ?></td>
                         <td><?php echo number_format($row['fiyat'] * $row['quantity'], 2); ?>₺</td>
                         <td>
-                            <?php
-                            if (isset($row['order_id'])) {
-                                echo '<a href="admin_approve.php?approve=' . htmlspecialchars($row['order_id']) . '">Onayla</a>';
-                            } else {
-                                echo 'ID bulunamadı';
-                            }
-                            ?>
+                            <a href="admin_approve.php?approve=<?php echo htmlspecialchars($row['order_id']); ?>">Onayla</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
