@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Ürün Silme
 if (isset($_GET['delete'])) {
     $urun_id = temizle($_GET['delete']);
-    $sql_delete = "DELETE FROM urunler WHERE id='$urun_id'";
+    $sql_delete = "DELETE FROM urunler WHERE id='$product_id'";
     if ($baglanti->query($sql_delete) === TRUE) {
         header("Location: addproducts.php");
         exit;
