@@ -24,7 +24,7 @@ if (isset($_GET['approve'])) {
     if ($order) {
         // Onaylandı olarak güncelle
         $sql_update = "UPDATE orders SET order_status = 'onaylandi' WHERE order_id = :id"; // Onay durumu güncelleme
-        echo "<script>console.log('SQL sorgusu: " . $sql_update . "');</script>";
+        echo "<script>console.log('SQL sorgusu: " . $sql_update . "');</script>"; // Konsola SQL sorgusunu yazdır
         $stmt_update = $conn->prepare($sql_update);
         $stmt_update->bindParam(':id', $order_id, PDO::PARAM_INT);
         
