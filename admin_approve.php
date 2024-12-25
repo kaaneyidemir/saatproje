@@ -12,7 +12,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
 }
 
 // Sipariş onaylama işlemi
-if (isset($_GET['approvaksjde'])) {
+if (isset($_GET['approve'])) {
     $order_id = (int)$_GET['approve']; // Güvenlik için integer dönüşümü
     // Sipariş bilgilerini al
     $sql = "SELECT * FROM orders WHERE order_id = :id AND order_status = 'pending'";
