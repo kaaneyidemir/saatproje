@@ -1,0 +1,335 @@
+/* Genel Ayarlar */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #00391b;
+    color: white;
+    padding: 15px 20px;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header nav .login-icon img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+header nav .login-icon img:hover {
+    transform: scale(1.2);
+}
+
+/* Slider */
+.slider {
+    width: 100vw;
+    height: 70vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.slides {
+    display: flex;
+    height: 100%;
+}
+
+.slides img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Öne Çıkan Saatler */
+.featured {
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+.product-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.product {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+    background-color: white;
+    transition: transform 0.3s;
+}
+
+.product:hover {
+    transform: translateY(-10px);
+}
+
+.product img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+/* Login Sayfası */
+form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+form input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #003399;
+}
+
+
+.contact-location {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ccc;
+}
+
+.contact-location div {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.contact-location h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.contact-location p,
+.contact-location form label {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.contact-location form input,
+.contact-location form textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.contact-location form button {
+    padding: 10px 15px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-location form button:hover {
+    background-color: #555;
+}
+.contact-location {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    gap: 20px;
+}
+
+/* Sol Kısım: Fotoğraf Alanı */
+.location-image {
+    flex: 1;
+    max-width: 40%;
+    text-align: center;
+}
+
+.location-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sağ Kısım: Form Alanı */
+.contact-form {
+    flex: 2;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.contact-form label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.contact-form button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-form button:hover {
+    background-color: #555;
+    
+}
+
+
+
+/* Ürün kartlarını grid sisteminde sıralamak için */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 sütunlu grid yapısı */
+    gap: 20px; /* Sütunlar arasında boşluk */
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+/* Ürün kartlarının stili */
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: white;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Kartlara gölge efekti */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover efektleri */
+    height: 100%; /* Kartın yükseklik değerini sabit tutuyoruz */
+}
+
+.product-card:hover {
+    transform: translateY(-10px); /* Hover yapıldığında kart yukarı kayar */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Hover'da daha fazla gölge */
+}
+
+/* Ürün resimlerinin stili */
+.product-image {
+    width: 100%; /* Resim kartın genişliğine yayılır */
+    height: 200px; /* Sabit yükseklik */
+    object-fit: cover; /* Resmin düzgün şekilde kesilmesini sağlar */
+    border-bottom: 1px solid #ddd; /* Resim ile içerik arasına sınır */
+}
+
+/* Ürün bilgileri */
+.product-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.product-info h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.product-price {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.product-stock {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.add-to-cart {
+    padding: 10px 15px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background-color: #003399;
+}
+
+/* Mobil uyumluluğu */
+@media (max-width: 1024px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 sütunlu grid yapısı */
+    }
+}
+
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr; /* 1 sütunlu grid yapısı */
+    }
+}
