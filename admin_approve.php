@@ -94,6 +94,80 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Paneli - Ürün Onaylama</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #004d00;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #4CAF50;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+        .message {
+            padding: 10px;
+            margin: 15px 0;
+            background-color: #ffdd57;
+            border-left: 5px solid #ff9c00;
+            color: #333;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -107,7 +181,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <main>
         <h2>Onaylanmamış Siparişler</h2>
         <?php if (isset($_SESSION['message'])): ?>
-            <p><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></p>
+            <div class="message"><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></div>
         <?php endif; ?>
         <table>
             <tr>
@@ -124,7 +198,6 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo htmlspecialchars($row['urun_adi']); ?></td>
                         <td><?php echo htmlspecialchars($row['quantity']); ?></td>
                         <td><?php echo number_format($row['fiyat'] * $row['quantity'], 2); ?>₺</td>
-                        
                         <td>
                             <?php
                             if (isset($row['order_id'])) {
@@ -134,7 +207,6 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             }
                             ?>
                         </td>
-
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
