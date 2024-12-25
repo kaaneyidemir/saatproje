@@ -81,7 +81,10 @@ if (isset($_GET['approve'])) {
 }
 
 // Onaylanmamış ürünleri listele
-$sql = "SELECT o.*, u.urun_adi, u.fiyat FROM orders o JOIN urunler u ON o.product_id = u.id WHERE o.order_status = 'pending'";
+$sql = "SELECT o.*, u.urun_adi, u.fiyat, us.username FROM orders o 
+        JOIN urunler u ON o.product_id = u.id 
+        JOIN users us ON o.user_id = us.id 
+        WHERE o.order_status = 'pending'";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -186,6 +189,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <table>
             <tr>
                 <th>Sipariş Numarası</th>
+                <th>Kullanıcı Adı</th>
                 <th>Ürün Adı</th>
                 <th>Adet</th>
                 <th>Toplam Fiyat</th>
@@ -195,6 +199,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($results as $row): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($row['order_number']); ?></td>
+                        <td><?php echo htmlspecialchars($row['username']); ?></td>
                         <td><?php echo htmlspecialchars($row['urun_adi']); ?></td>
                         <td><?php echo htmlspecialchars($row['quantity']); ?></td>
                         <td><?php echo number_format($row['fiyat'] * $row['quantity'], 2); ?>₺</td>
@@ -211,7 +216,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="5">Henüz onaylanmamış sipariş bulunmamaktadır.</td>
+                    <td colspan="6">Henüz onaylanmamış sipariş bulunmamaktadır.</td>
                 </tr>
             <?php endif; ?>
         </table>

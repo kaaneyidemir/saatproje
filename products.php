@@ -163,7 +163,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 </head>
 <body>
 <header>
-    <h1><a href="index.php"><i class="fa-solid fa-hippo"></i></a></h1>
+     <h1><a href="index.php"><img src="./images/logo.png" alt="" style="width:50px;"></a></h1>
     <nav>
         <a href="index.php">Ana Sayfa</a>
         <a href="products.php">Ürünler</a>
