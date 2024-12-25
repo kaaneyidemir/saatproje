@@ -13,7 +13,6 @@ $dbname = "test"; // Veritabanı adı
 $username = "root"; // Veritabanı kullanıcı adı
 $password = ""; // Veritabanı şifresi
 
-
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -28,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Form verilerini al
     $username = htmlspecialchars(trim($_POST['username']));
     $email = htmlspecialchars(trim($_POST['email']));
+    $phone = htmlspecialchars(trim($_POST['phone'])); // Telefon numarasını al
     $password = trim($_POST['password']);
     
     // Şifreyi hash'le
@@ -44,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error_message = "Bu kullanıcı adı veya e-posta zaten kullanılıyor!";
             } else {
                 // Yeni kullanıcıyı ekle
-                $insert_stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
-                $insert_stmt->execute(['username' => $username, 'email' => $email, 'password' => $hashed_password]);
+                $insert_stmt = $pdo->prepare("INSERT INTO users (username, email, phone, password) VALUES (:username, :email, :phone, :password)");
+                $insert_stmt->execute(['username' => $username, 'email' => $email, 'phone' => $phone, 'password' => $hashed_password]);
                 
                 $success_message = "Kayıt başarılı! Giriş yapmak için <a href='login.php'>buraya tıklayın</a>.";
             }
@@ -84,6 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="email">E-posta:</label>
         <input type="email" id="email" name="email" required>
+
+        <label for="phone">Telefon Numarası:</label>
+        <input type="text" id="phone" name="phone">
 
         <label for="password">Şifre:</label>
         <input type="password" id="password" name="password" required>
