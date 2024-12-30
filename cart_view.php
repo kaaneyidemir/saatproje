@@ -127,7 +127,7 @@ $toplam_tutar = 0;
                             <p>Adet: <?php echo $adet; ?></p>
                             <p>Toplam: <?php echo number_format($urun_toplam, 2); ?>&#8378;</p>
                         </div>
-                        <a href="cart_view.php?remove_id=<?php echo $urun_id; ?>">Kaldır</a>
+                        <a href="cart_view.php?remove_id=<?php echo $urun_id; ?>">X</a>
                     </div>
                 <?php endwhile; ?>
                 <div class="total">
