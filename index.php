@@ -173,6 +173,26 @@ if (isset($_SESSION['username'])) {
         .product-grid .product {
             cursor: pointer;
         }
+
+        /* Kar tanelerinin temel stili */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            pointer-events: none; /* Kar tanelerinin üzerine tıklanmasını engeller */
+            color: #fff;
+            font-size: 20px;
+            opacity: 0.8;
+            user-select: none;
+            z-index: 9999;
+            animation: fall linear infinite;
+        }
+
+        /* Kar tanelerinin düşme animasyonu */
+        @keyframes fall {
+            to {
+                transform: translateY(100vh); /* Sayfanın yüksekliği kadar aşağıya kayma */
+            }
+        }
     </style>
 </head>
 <body>
@@ -295,7 +315,6 @@ if (isset($_SESSION['username'])) {
             </div>
         </section>
 
-        
         <!-- Flexbox ile iki öğe yan yana -->
         <section class="flex-container">
             <div class="flex-item">
@@ -327,5 +346,28 @@ if (isset($_SESSION['username'])) {
     <footer>
         <p>© SAAT2M Tüm Haklar Saklidir.</p>
     </footer>
+
+    <!-- Kar Yağdırma Efekti -->
+    <script>
+        // Kar tanelerini ekleme fonksiyonu
+        function createSnowflakes() {
+            const numberOfSnowflakes = 250; // Kar tanesi sayısı
+            const snowflakeContainer = document.body;
+
+            for (let i = 0; i < numberOfSnowflakes; i++) {
+                let snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.innerText = '❄'; // Kar tanesi simgesi
+                snowflake.style.left = Math.random() * 100 + 'vw'; // Rastgele yatay konum
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; // Rastgele düşme süresi
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; // Rastgele boyut
+                snowflake.style.animationDelay = Math.random() * 5 + 's'; // Rastgele başlama gecikmesi
+                snowflakeContainer.appendChild(snowflake);
+            }
+        }
+
+        // Kar yağdırma başlatma
+        window.onload = createSnowflakes;
+    </script>
 </body>
 </html>
