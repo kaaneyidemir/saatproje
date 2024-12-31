@@ -22,32 +22,112 @@ if (isset($_SESSION['username'])) {
     <script src="scripts.js"></script>
 
     <style>
-        /* Slider için temel stiller */
-        .slider {
-            display: flex;
-            justify-content: space-between;
-            max-width: 100%;
-            margin: auto;
-        }
-        .slider .slides img {
-            width: 33.33%;
-            display: block;
+        /* Sohbet Botu Stili */
+        .chatbot-container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 300px;
+            z-index: 1000;
+            display: none; /* Başlangıçta gizle */
         }
 
-        /* Yeni büyük slider */
-        .large-slider {
+        .chatbox {
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            padding: 10px;
             display: flex;
-            justify-content: space-between;
-            max-width: 100%;
-            margin-top: 20px;
-        }
-        .large-slider .slides img {
+            flex-direction: column;
+            height: 400px;
             width: 100%;
-            display: block;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        html {
-            scroll-behavior: smooth;
+        .chatbox-messages {
+            overflow-y: scroll;
+            flex: 1;
+            margin-bottom: 10px;
+        }
+
+        .chatbox input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .chatbox button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chatbox button:hover {
+            background-color: #45a049;
+        }
+
+        /* Sohbet Mesajı Stili */
+        .message {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message .message-bubble {
+            padding: 10px;
+            border-radius: 20px;
+            max-width: 70%;
+        }
+
+        .message.bot .message-bubble {
+            background-color: #ddd;
+            color: #000;
+        }
+
+        .message.user .message-bubble {
+            background-color: #25d366;
+            color: white;
+        }
+
+        /* Fade-in animasyonu */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Sohbet butonu stili */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1001; /* Sohbet butonunun ön planda olmasını sağla */
+        }
+
+        .chatbot-toggle:hover {
+            background-color: #45a049;
         }
 
         /* Kaydıran yazı bandı */
@@ -110,27 +190,27 @@ if (isset($_SESSION['username'])) {
         }
 
         .contact-location {
-            display: flex; /* Flexbox ile öğeleri yanyana hizalar */
-            justify-content: space-between; /* Aralarındaki boşluğu eşitler */
-            align-items: center; /* Dikeyde ortalar */
-            max-width: 1200px; /* Maksimum genişlik */
-            margin: 0 auto; /* Ortalar */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .location-image {
-            flex: 1; /* Fotoğraf alanına alan verir */
-            max-width: 45%; /* Fotoğrafın genişliğini sınırlar */
+            flex: 1;
+            max-width: 45%;
         }
 
         .location-image img {
-            width: 100%; /* Fotoğrafın genişliği konteynerle uyumlu olacak şekilde ayarlanır */
-            height: auto; /* Orantılı bir şekilde büyütülür */
+            width: 100%;
+            height: auto;
         }
 
         .contact-form {
-            flex: 1; /* Form alanına alan verir */
-            max-width: 45%; /* Formun genişliğini sınırlar */
-            padding-left: 20px; /* Form ile fotoğraf arasına boşluk ekler */
+            flex: 1;
+            max-width: 45%;
+            padding-left: 20px;
         }
 
         .contact-form form {
@@ -161,7 +241,7 @@ if (isset($_SESSION['username'])) {
         .flex-container {
             display: flex;
             justify-content: space-between;
-            gap: 20px; /* Öğeler arasındaki boşluk */
+            gap: 20px;
         }
 
         .flex-container .flex-item {
@@ -169,16 +249,14 @@ if (isset($_SESSION['username'])) {
             max-width: 45%;
         }
 
-        /* Kartlar için tıklanabilir alan */
         .product-grid .product {
             cursor: pointer;
         }
 
-        /* Kar tanelerinin temel stili */
         .snowflake {
             position: absolute;
             top: -10px;
-            pointer-events: none; /* Kar tanelerinin üzerine tıklanmasını engeller */
+            pointer-events: none;
             color: #fff;
             font-size: 20px;
             opacity: 0.8;
@@ -187,10 +265,9 @@ if (isset($_SESSION['username'])) {
             animation: fall linear infinite;
         }
 
-        /* Kar tanelerinin düşme animasyonu */
         @keyframes fall {
             to {
-                transform: translateY(100vh); /* Sayfanın yüksekliği kadar aşağıya kayma */
+                transform: translateY(100vh);
             }
         }
     </style>
@@ -205,169 +282,135 @@ if (isset($_SESSION['username'])) {
 
             <?php if ($username): ?>
                 <a href="logout.php"><i class="fa-regular fa-user"></i> Çıkış</a>
-                
-                <!-- Admin için Ürün Ekleme butonu -->
+
                 <?php if ($is_admin): ?>
                     <a href="addproducts.php">
                         <button>Ürün Ekle</button>
                     </a>
-                    <!-- Admin için Sipariş Onay butonu -->
                     <a href="admin_approve.php">
                         <button>Sipariş Onay</button>
                     </a>
                 <?php endif; ?>
                 
-                <!-- Kullanıcı için Siparişlerim butonu -->
                 <a href="orders.php">Siparişlerim</a>
             <?php else: ?>
                 <a href="login.php"><i class="fa-regular fa-user"></i> Giriş Yap</a>
             <?php endif; ?>
         </nav>
     </header>
-    
-    <!-- Hoşgeldiniz Bildirimi -->
+
+    <section class="chatbot-container" id="chatbotContainer">
+        <div id="chatbox" class="chatbox">
+            <div class="chatbox-messages" id="messages"></div>
+            <input type="text" id="userInput" placeholder="Mesajınızı yazın..." />
+            <button onclick="sendMessage()">Gönder</button>
+        </div>
+    </section>
+
+    <!-- Sohbet Botu Toggle Butonu -->
+    <button id="chatbotToggle" class="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+
     <?php if ($username): ?>
         <div class="welcome-notification" id="welcomeNotification">
             Hoşgeldiniz, <?php echo $username; ?>!
         </div>
         <script>
-            // Bildirimi göstermek için JavaScript
             window.onload = function() {
                 const notification = document.getElementById('welcomeNotification');
-                notification.classList.add('show'); // Bildirimi göster
+                notification.classList.add('show');
                 setTimeout(function() {
-                    notification.classList.remove('show'); // 5 saniye sonra bildirimi gizle
-                }, 5000); // 5 saniye sonra kaybolacak
+                    notification.classList.remove('show');
+                }, 5000);
             };
         </script>
     <?php endif; ?>
 
     <main>
-        <!-- Yeni Büyük Slider -->
         <section class="large-slider">
-            <div class="slides">
-            <a href="products.php">
-                <img src="images/watch2.jpg" alt="Büyük Saat 1">
-            </a>
-            </div>
-            <div class="slides">
-            <a href="products.php">
-                <img src="images/saat5.jpg" alt="Büyük Saat 2">
-            </a>
-            </div>
-            <div class="slides">
-            <a href="products.php">
-                <img src="images/saat9.jpg" alt="Büyük Saat 3">
-            </a>
-            </div>
+            <div class="slides"><a href="products.php"><img src="images/watch2.jpg" alt="Büyük Saat 1"></a></div>
+            <div class="slides"><a href="products.php"><img src="images/saat5.jpg" alt="Büyük Saat 2"></a></div>
+            <div class="slides"><a href="products.php"><img src="images/saat9.jpg" alt="Büyük Saat 3"></a></div>
         </section>
 
-        <!-- Öne Çıkan Saatler -->
         <section class="featured">
             <h2>Öne Çıkan Saatler</h2>
             <div class="product-grid">
                 <div class="product" onclick="window.location.href='products.php';">
                     <img src="images/saat5.jpg" alt="Saat 1">
                     <h3>Klasik Saat</h3>
-                    <p></p>
                 </div>
                 <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/saat9.jpg" alt="Saat 2">
-                    <h3>Spor Saat</h3>
-                    <p></p>
+                    <img src="images/saat2.jpg" alt="Saat 2">
+                    <h3>Modern Saat</h3>
                 </div>
                 <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/saat7.jpg" alt="Saat 3">
-                    <h3>Spor Saat</h3>
-                    <p></p>
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
                 </div>
-                <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/watch11.png" alt="Saat 4">
-                    <h3>Spor Saat</h3>
-                    <p></p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Kaydıran Yazı Bandı -->
-        <section class="marquee-container">
-            <div class="marquee">
-                AKLINIZDA DEĞİL KOLUNUZDA OLSUN!
-            </div>
-        </section>
-
-        <!-- Yeni Büyük Slider (Tekrar) -->
-        <section class="large-slider">
-            <div class="slides">
-            <a href="products.php">
-                <img src="images/saat9.jpg" alt="Büyük Saat 1">
-            </a>
-            </div>
-            <div class="slides">
-                <a href="products.php">
-                <img src="images/saat8.jpg" alt="Büyük Saat 2">
-                </a>
-            </div>
-            <div class="slides">
-            <a href="products.php">
-                <img src="images/saat5.jpg" alt="Büyük Saat 3">
-            </a>
-            </div>
-        </section>
-
-        <!-- Flexbox ile iki öğe yan yana -->
-        <section class="flex-container">
-            <div class="flex-item">
-            <h2> <p>
-  <center>Adresimiz</center>
-</p></h2>
-                <img src="images/harita3.png" alt="Lokasyon Fotoğrafı" width="100%">
-            </div>
-            <div class="flex-item">
-            <h2> <p>
-  <center>Bize Ulaşın</center>
-</p></h2>
-                <form action="contact_form.php" method="post">
-                    <label for="name">Adınız:</label>
-                    <input type="text" id="name" name="name" required>
-
-                    <label for="email">E-posta:</label>
-                    <input type="email" id="email" name="email" required>
-
-                    <label for="message">Mesajınız:</label>
-                    <textarea id="message" name="message" rows="4" required></textarea>
-
-                    <button type="submit">Gönder</button>
-                </form>
             </div>
         </section>
     </main>
 
     <footer>
-        <p>© SAAT2M Tüm Haklar Saklidir.</p>
+        <div class="contact-location">
+            <div class="location-image">
+                <img src="images/harita3.png" alt="Konum">
+            </div>
+            <div class="contact-form">
+                <h3>Bize Ulaşın</h3>
+                <form action="contact_form.php" method="POST">
+                    <input type="text" name="name" placeholder="Adınız" required>
+                    <input type="email" name="email" placeholder="E-posta" required>
+                    <textarea name="message" placeholder="Mesajınız" required></textarea>
+                    <button type="submit">Gönder</button>
+                </form>
+            </div>
+        </div>
     </footer>
 
-    <!-- Kar Yağdırma Efekti -->
     <script>
-        // Kar tanelerini ekleme fonksiyonu
-        function createSnowflakes() {
-            const numberOfSnowflakes = 250; // Kar tanesi sayısı
-            const snowflakeContainer = document.body;
+        // Kullanıcı ve bot mesajları yazdırılacak fonksiyon
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value; // Kullanıcıdan gelen input
+            if (userInput.trim() === '') return; // Boş mesajı geç
 
-            for (let i = 0; i < numberOfSnowflakes; i++) {
-                let snowflake = document.createElement('div');
-                snowflake.classList.add('snowflake');
-                snowflake.innerText = '❄'; // Kar tanesi simgesi
-                snowflake.style.left = Math.random() * 100 + 'vw'; // Rastgele yatay konum
-                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; // Rastgele düşme süresi
-                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; // Rastgele boyut
-                snowflake.style.animationDelay = Math.random() * 5 + 's'; // Rastgele başlama gecikmesi
-                snowflakeContainer.appendChild(snowflake);
-            }
+            // Kullanıcı mesajını ekle
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('message', 'user', 'fade-in');
+            userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
+            document.getElementById('messages').appendChild(userMessage);
+
+            // Kullanıcı mesajını temizle
+            document.getElementById('userInput').value = '';
+
+            // Bot cevabını ekle (burada sabit bir mesaj, dinamik cevaplar eklenebilir)
+            setTimeout(function() {
+                const botMessage = document.createElement('div');
+                botMessage.classList.add('message', 'bot', 'fade-in');
+                botMessage.innerHTML = `<div class="message-bubble">Merhaba! Size nasıl yardımcı olabilirim?</div>`;
+                document.getElementById('messages').appendChild(botMessage);
+                
+                // Yeni mesajlar eklenince kaydırma işlemi yapılacak
+                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            }, 1000);
+            
+            // Mesajlar eklenince kaydırma işlemi
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
         }
 
-        // Kar yağdırma başlatma
-        window.onload = createSnowflakes;
+        // Sohbet penceresini açıp kapatacak fonksiyon
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbotContainer');
+            chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'block' : 'none';
+        }
+
+        // Enter tuşuyla mesaj gönderme
+        document.getElementById('userInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
     </script>
+
 </body>
 </html>
