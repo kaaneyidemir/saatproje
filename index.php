@@ -19,7 +19,8 @@ if (isset($_SESSION['username'])) {
     <title>SAAT2M</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="scripts.js"></script>
+    <script src="scripts.js">
+    </script>
 
     <style>
         /* Sohbet Botu Stili */
