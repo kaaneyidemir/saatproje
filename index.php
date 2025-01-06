@@ -123,7 +123,6 @@ if (isset($_SESSION['username'])) {
             padding: 15px;
             font-size: 20px;
             cursor: pointer;
-           /*  z-index: 1001; Sohbet butonunun ön planda olmasını sağla */
         }
 
         .chatbot-toggle:hover {
@@ -179,95 +178,6 @@ if (isset($_SESSION['username'])) {
             }
             to {
                 transform: translateX(0);
-            }
-        }
-
-        /* Footer düzenlemeleri */
-        footer {
-            padding: 20px;
-            background-color: #f1f1f1;
-            text-align: center;
-        }
-
-        .contact-location {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .location-image {
-            flex: 1;
-            max-width: 45%;
-        }
-
-        .location-image img {
-            width: 100%;
-            height: auto;
-        }
-
-        .contact-form {
-            flex: 1;
-            max-width: 45%;
-            padding-left: 20px;
-        }
-
-        .contact-form form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .contact-form input,
-        .contact-form textarea,
-        .contact-form button {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .contact-form button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-
-        .contact-form button:hover {
-            background-color: #45a049;
-        }
-
-        /* Yeni Flex düzenlemesi: İki öğe yan yana olacak */
-        .flex-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .flex-container .flex-item {
-            flex: 1;
-            max-width: 45%;
-        }
-
-        .product-grid .product {
-            cursor: pointer;
-        }
-
-        .snowflake {
-            position: absolute;
-            top: -10px;
-            pointer-events: none;
-            color: #fff;
-            font-size: 20px;
-            opacity: 0.8;
-            user-select: none;
-            z-index: 9999;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
             }
         }
     </style>
@@ -395,83 +305,53 @@ if (isset($_SESSION['username'])) {
 
     <script>
     function sendMessage() {
-    const userInput = document.getElementById('userInput').value;
-    if (userInput.trim() === '') return;
+        const userInput = document.getElementById('userInput').value;
+        if (userInput.trim() === '') return;
 
-    // Kullanıcı mesajını ekle
-    const userMessage = document.createElement('div');
-    userMessage.classList.add('message', 'user', 'fade-in');
-    userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
-    document.getElementById('messages').appendChild(userMessage);
+        // Kullanıcı mesajını ekle
+        const userMessage = document.createElement('div');
+        userMessage.classList.add('message', 'user', 'fade-in');
+        userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
+        document.getElementById('messages').appendChild(userMessage);
 
-    // Kullanıcı mesajını temizle
-    document.getElementById('userInput').value = '';
+        // Kullanıcı mesajını temizle
+        document.getElementById('userInput').value = '';
 
-    // API isteği
-    fetch('chatgpt_api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userInput })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.choices && data.choices.length > 0) {
-            const botReply = data.choices[0].message.content;
-
-            // Bot mesajını ekle
-            const botMessage = document.createElement('div');
-            botMessage.classList.add('message', 'bot', 'fade-in');
-            botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
-            document.getElementById('messages').appendChild(botMessage);
-
-            // Scroll en aşağı kaydır
-            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        // Bot cevabını kontrol et
+        let botReply = '';
+        if (userInput.toLowerCase() === 'merhaba') {
+            botReply = 'Merhaba işte!'; // Merhaba cevabı
         } else {
-            console.error('API yanıtı beklenmedik formatta:', data);
+            botReply = 'Bunu anlayamadım. Yardım edebilir misin?'; // Bilinmeyen girişler için cevap
         }
-    })
-    .catch(error => {
-        console.error('API isteği başarısız:', error);
-    });
-}
 
-    // Sohbet penceresini açıp kapatacak fonksiyon
+        // Bot mesajını ekle
+        const botMessage = document.createElement('div');
+        botMessage.classList.add('message', 'bot', 'fade-in');
+        botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
+        document.getElementById('messages').appendChild(botMessage);
+
+        // Alt butonlar (Hakkımızda, İletişim, Ürünler)
+        if (userInput.toLowerCase() === 'merhaba') {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('bot-options');
+            optionsDiv.innerHTML = `
+                <button onclick="window.location.href='about.php'">Hakkımızda</button>
+                <button onclick="window.location.href='contact.php'">İletişim</button>
+                <button onclick="window.location.href='products.php'">Ürünler</button>
+            `;
+            document.getElementById('messages').appendChild(optionsDiv);
+        }
+
+        // Scroll en aşağı kaydır
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    // Sohbet penceresini açıp kapatmak için fonksiyon
     function toggleChatbot() {
-        const chatbot = document.getElementById('chatbotContainer');
-        chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'block' : 'none';
+        const chatbotContainer = document.getElementById('chatbotContainer');
+        chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
     }
-
-    // Enter tuşuyla mesaj gönderme
-    document.getElementById('userInput').addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            sendMessage();
-        }
-    });
 </script>
-
-<style>
-    .bot-options {
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .bot-options button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-        text-align: center;
-    }
-
-    .bot-options button:hover {
-        background-color: #45a049;
-    }
-</style>
-<script src="scripts.js">
 </body>
 </html>

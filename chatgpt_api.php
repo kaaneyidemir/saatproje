@@ -1,5 +1,6 @@
 <?php
-$api_key = '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';
+// Güvenlik için API anahtarını çevresel değişkenlerden alıyoruz
+$api_key = getenv('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'); // API anahtarınızı çevresel değişken olarak ayarlayın
 
 if (!$api_key) {
     echo json_encode(['error' => 'API anahtarı bulunamadı.']);
@@ -24,7 +25,7 @@ $headers = [
 ];
 
 $payload = [
-    'model' => 'GPT-4o.', // Model adı doğru
+    'model' => 'gpt-3.5-turbo', // Model adı doğru
     'messages' => [
         ['role' => 'system', 'content' => 'Kullanıcıya yardımcı olan bir asistan gibi davran.'],
         ['role' => 'user', 'content' => $data['message']]
