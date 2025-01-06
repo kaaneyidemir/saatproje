@@ -1,10 +1,20 @@
 <?php
-// OpenAI API anahtarını ayarlayın
 $api_key = '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';
 
-// JSON formatında gelen kullanıcı mesajını alın
+if (!$api_key) {
+    echo json_encode(['error' => 'API anahtarı bulunamadı.']);
+    exit;
+}
+
+// JSON formatında gelen kullanıcı mesajını al
 $request_body = file_get_contents('php://input');
 $data = json_decode($request_body, true);
+
+// Eğer 'message' verisi yoksa hata döndür
+if (!isset($data['message'])) {
+    echo json_encode(['error' => 'Mesaj parametresi eksik.']);
+    exit;
+}
 
 // OpenAI API isteği için hazırlık
 $url = 'https://api.openai.com/v1/chat/completions';
@@ -14,7 +24,7 @@ $headers = [
 ];
 
 $payload = [
-    'model' => 'gpt-3.5-turbo', // Model adını doğru yazdığınızdan emin olun
+    'model' => 'GPT-4o.', // Model adı doğru
     'messages' => [
         ['role' => 'system', 'content' => 'Kullanıcıya yardımcı olan bir asistan gibi davran.'],
         ['role' => 'user', 'content' => $data['message']]
@@ -41,16 +51,12 @@ curl_close($ch);
 // API yanıtını çözümle
 $response_data = json_decode($response, true);
 
-// Yanıtın tamamını ekrana basarak kontrol edin
-// echo '<pre>';
-// print_r($response_data);
-// echo '</pre>';
-
-// API yanıtında 'choices' array'inin olup olmadığını kontrol et
+// Yanıtı ekrana basarak kontrol edin (hata ayıklama için)
 if (isset($response_data['choices']) && isset($response_data['choices'][0]['message']['content'])) {
     $botReply = $response_data['choices'][0]['message']['content'];
     echo json_encode(['message' => $botReply]);
 } else {
-    echo json_encode(['error' => 'Beklenmedik yanıt formatı']);
+    // API beklenmedik formatta yanıt verirse burada yakalanır
+    echo json_encode(['error' => 'Beklenmedik yanıt formatı', 'response' => $response_data]);
 }
 ?>
