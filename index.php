@@ -19,7 +19,6 @@ if (isset($_SESSION['username'])) {
     <title>SAAT2M</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="scripts.js">
     </script>
 
     <style>
@@ -124,7 +123,7 @@ if (isset($_SESSION['username'])) {
             padding: 15px;
             font-size: 20px;
             cursor: pointer;
-            z-index: 1001; /* Sohbet butonunun ön planda olmasını sağla */
+           /*  z-index: 1001; Sohbet butonunun ön planda olmasını sağla */
         }
 
         .chatbot-toggle:hover {
@@ -275,7 +274,7 @@ if (isset($_SESSION['username'])) {
 </head>
 <body>
     <header>
-        <h1><a href="index.php"><img src="./images/logo.png" alt="" style="width:50px"></a></h1>
+        <h1><a href="index.php"><img src="./images/logo2.png" alt="" style="width:50px"></a></h1>
         <nav>
             <a href="index.php">Ana Sayfa</a>
             <a href="products.php">Ürünler</a>
@@ -303,7 +302,7 @@ if (isset($_SESSION['username'])) {
     <section class="chatbot-container" id="chatbotContainer">
         <div id="chatbox" class="chatbox">
             <div class="chatbox-messages" id="messages"></div>
-            <input type="text" id="userInput" placeholder="Mesajınızı yazın..." />
+            <input type="text" id="userInput" placeholder="Mesajınızı yazın..." /><br>
             <button onclick="sendMessage()">Gönder</button>
         </div>
     </section>
@@ -395,48 +394,46 @@ if (isset($_SESSION['username'])) {
     </footer>
 
     <script>
-    // Kullanıcı ve bot mesajları yazdırılacak fonksiyon
     function sendMessage() {
-        const userInput = document.getElementById('userInput').value; // Kullanıcıdan gelen input
-        if (userInput.trim() === '') return; // Boş mesajı geç
+    const userInput = document.getElementById('userInput').value;
+    if (userInput.trim() === '') return;
 
-        // Kullanıcı mesajını ekle
-        const userMessage = document.createElement('div');
-        userMessage.classList.add('message', 'user', 'fade-in');
-        userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
-        document.getElementById('messages').appendChild(userMessage);
+    // Kullanıcı mesajını ekle
+    const userMessage = document.createElement('div');
+    userMessage.classList.add('message', 'user', 'fade-in');
+    userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
+    document.getElementById('messages').appendChild(userMessage);
 
-        // Kullanıcı mesajını temizle
-        document.getElementById('userInput').value = '';
+    // Kullanıcı mesajını temizle
+    document.getElementById('userInput').value = '';
 
-        // Botun ilk mesajını ekle
-        setTimeout(function () {
-            const botMessage1 = document.createElement('div');
-            botMessage1.classList.add('message', 'bot', 'fade-in');
-            botMessage1.innerHTML = `<div class="message-bubble">Merhaba! Size nasıl yardımcı olabilirim?</div>`;
-            document.getElementById('messages').appendChild(botMessage1);
+    // API isteği
+    fetch('chatgpt_api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userInput })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.choices && data.choices.length > 0) {
+            const botReply = data.choices[0].message.content;
 
-            // Yeni mesajlar eklenince kaydırma işlemi
+            // Bot mesajını ekle
+            const botMessage = document.createElement('div');
+            botMessage.classList.add('message', 'bot', 'fade-in');
+            botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
+            document.getElementById('messages').appendChild(botMessage);
+
+            // Scroll en aşağı kaydır
             document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-
-            // İkinci mesaj (butonlar) eklenir
-            setTimeout(function () {
-                const botMessage2 = document.createElement('div');
-                botMessage2.classList.add('message', 'bot', 'fade-in');
-                botMessage2.innerHTML = `
-                    <div class="bot-options">
-                        <button onclick="window.location.href='index.php';">Ana Sayfa</button>
-                        <button onclick="window.location.href='products.php';">Ürünler</button>
-                        <button onclick="window.location.href='login.php';">Giriş Yap</button>
-                    </div>
-                `;
-                document.getElementById('messages').appendChild(botMessage2);
-
-                // Yeni mesajlar eklenince kaydırma işlemi
-                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-            }, 1000);
-        }, 1000);
-    }
+        } else {
+            console.error('API yanıtı beklenmedik formatta:', data);
+        }
+    })
+    .catch(error => {
+        console.error('API isteği başarısız:', error);
+    });
+}
 
     // Sohbet penceresini açıp kapatacak fonksiyon
     function toggleChatbot() {
@@ -475,7 +472,6 @@ if (isset($_SESSION['username'])) {
         background-color: #45a049;
     }
 </style>
-
-
+<script src="scripts.js">
 </body>
 </html>
