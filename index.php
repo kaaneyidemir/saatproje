@@ -343,7 +343,7 @@ if (isset($_SESSION['username'])) {
             document.getElementById('messages').appendChild(optionsDiv);
         }
 
-        // Scroll en aşağı kaydır
+        // Scroll en aşağı kaydırr
         document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     }
 
