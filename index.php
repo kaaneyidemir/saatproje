@@ -326,11 +326,32 @@ if (isset($_SESSION['username'])) {
     <?php endif; ?>
 
     <main>
-        <section class="large-slider">
-            <div class="slides"><a href="products.php"><img src="images/watch2.jpg" alt="Büyük Saat 1"></a></div>
-            <div class="slides"><a href="products.php"><img src="images/saat5.jpg" alt="Büyük Saat 2"></a></div>
-            <div class="slides"><a href="products.php"><img src="images/saat9.jpg" alt="Büyük Saat 3"></a></div>
-        </section>
+    <section class="large-slider">
+    <div class="slides"><a href="products.php"><img src="images/watch2.jpg" alt="Büyük Saat 1"></a></div>
+    <div class="slides"><a href="products.php"><img src="images/saat5.jpg" alt="Büyük Saat 2"></a></div>
+    <div class="slides"><a href="products.php"><img src="images/saat9.jpg" alt="Büyük Saat 3"></a></div>
+</section>
+
+<style>
+    .large-slider {
+        display: flex; /* Flexbox düzenini etkinleştir */
+        justify-content: center; /* Öğeleri yatayda ortala */
+        gap: 20px; /* Öğeler arasına boşluk ekle */
+    }
+
+    .slides {
+        flex: 1; /* Öğelerin eşit genişlikte olmasını sağla */
+        max-width: 30%; /* Her bir slide için maksimum genişlik belirle */
+        text-align: center; /* Görselleri ortala */
+    }
+
+    .slides img {
+        width: 100%; /* Görsellerin tamamen slide içinde görünmesini sağla */
+        height: auto; /* Oranları koru */
+        border-radius: 10px; /* Köşeleri yuvarla */
+    }
+</style>
+
 
         <section class="featured">
             <h2>Öne Çıkan Saatler</h2>
