@@ -368,6 +368,10 @@ if (isset($_SESSION['username'])) {
                     <img src="images/saat9.jpg" alt="Saat 3">
                     <h3>Farklı Tasarım</h3>
                 </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
             </div>
         </section>
     </main>
