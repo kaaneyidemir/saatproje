@@ -394,48 +394,87 @@ if (isset($_SESSION['username'])) {
     </footer>
 
     <script>
-        // Kullanıcı ve bot mesajları yazdırılacak fonksiyon
-        function sendMessage() {
-            const userInput = document.getElementById('userInput').value; // Kullanıcıdan gelen input
-            if (userInput.trim() === '') return; // Boş mesajı geç
+    // Kullanıcı ve bot mesajları yazdırılacak fonksiyon
+    function sendMessage() {
+        const userInput = document.getElementById('userInput').value; // Kullanıcıdan gelen input
+        if (userInput.trim() === '') return; // Boş mesajı geç
 
-            // Kullanıcı mesajını ekle
-            const userMessage = document.createElement('div');
-            userMessage.classList.add('message', 'user', 'fade-in');
-            userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
-            document.getElementById('messages').appendChild(userMessage);
+        // Kullanıcı mesajını ekle
+        const userMessage = document.createElement('div');
+        userMessage.classList.add('message', 'user', 'fade-in');
+        userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
+        document.getElementById('messages').appendChild(userMessage);
 
-            // Kullanıcı mesajını temizle
-            document.getElementById('userInput').value = '';
+        // Kullanıcı mesajını temizle
+        document.getElementById('userInput').value = '';
 
-            // Bot cevabını ekle (burada sabit bir mesaj, dinamik cevaplar eklenebilir)
-            setTimeout(function() {
-                const botMessage = document.createElement('div');
-                botMessage.classList.add('message', 'bot', 'fade-in');
-                botMessage.innerHTML = `<div class="message-bubble">Merhaba! Size nasıl yardımcı olabilirim?</div>`;
-                document.getElementById('messages').appendChild(botMessage);
-                
-                // Yeni mesajlar eklenince kaydırma işlemi yapılacak
+        // Botun ilk mesajını ekle
+        setTimeout(function () {
+            const botMessage1 = document.createElement('div');
+            botMessage1.classList.add('message', 'bot', 'fade-in');
+            botMessage1.innerHTML = `<div class="message-bubble">Merhaba! Size nasıl yardımcı olabilirim?</div>`;
+            document.getElementById('messages').appendChild(botMessage1);
+
+            // Yeni mesajlar eklenince kaydırma işlemi
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+
+            // İkinci mesaj (butonlar) eklenir
+            setTimeout(function () {
+                const botMessage2 = document.createElement('div');
+                botMessage2.classList.add('message', 'bot', 'fade-in');
+                botMessage2.innerHTML = `
+                    <div class="bot-options">
+                        <button onclick="window.location.href='index.php';">Ana Sayfa</button>
+                        <button onclick="window.location.href='products.php';">Ürünler</button>
+                        <button onclick="window.location.href='login.php';">Giriş Yap</button>
+                    </div>
+                `;
+                document.getElementById('messages').appendChild(botMessage2);
+
+                // Yeni mesajlar eklenince kaydırma işlemi
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }, 1000);
-            
-            // Mesajlar eklenince kaydırma işlemi
-            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-        }
+        }, 1000);
+    }
 
-        // Sohbet penceresini açıp kapatacak fonksiyon
-        function toggleChatbot() {
-            const chatbot = document.getElementById('chatbotContainer');
-            chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'block' : 'none';
-        }
+    // Sohbet penceresini açıp kapatacak fonksiyon
+    function toggleChatbot() {
+        const chatbot = document.getElementById('chatbotContainer');
+        chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'block' : 'none';
+    }
 
-        // Enter tuşuyla mesaj gönderme
-        document.getElementById('userInput').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
+    // Enter tuşuyla mesaj gönderme
+    document.getElementById('userInput').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+
+<style>
+    .bot-options {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .bot-options button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .bot-options button:hover {
+        background-color: #45a049;
+    }
+</style>
+
 
 </body>
 </html>
