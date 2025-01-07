@@ -19,6 +19,7 @@ if (isset($_SESSION['username'])) {
     <title>SAAT2M</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    
 
     <style>
         /* Sohbet Botu Stili */
@@ -423,7 +424,7 @@ if (isset($_SESSION['username'])) {
                 optionsDiv.innerHTML = `
                     <button onclick="window.location.href='about.php'">Hakkımızda</button>
                     <button onclick="window.location.href='contact.php'">İletişim</button>
-                    <button onclick="window.location.href='products.php'">Ürünler</button>
+                    <button onclick="window.location.href='suprize.php'">İNDİRİM</button>
                 `;
                 document.getElementById('messages').appendChild(optionsDiv);
             }

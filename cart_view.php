@@ -107,10 +107,12 @@ if (isset($_POST['purchase'])) {
     } else {
         echo "<p style='color: red; text-align: center;'>Sepetiniz boş, satın alma işlemi yapılamaz.</p>";
     }
+ 
 }
-
 $sepet = $_SESSION['cart'];
 $toplam_tutar = 0;
+
+
 ?>
 
 <!DOCTYPE html>
