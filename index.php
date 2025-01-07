@@ -187,23 +187,23 @@ if (isset($_SESSION['username'])) {
         <h1><a href="index.php"><img src="./images/logo2.png" alt="" style="width:50px"></a></h1>
         <nav style="display: flex; justify-content: flex-end; width: 100%;">
             <div>
-                <a href="index.php">Ana Sayfa</a>
-                <a href="products.php">Ürünler</a>
-                <a href="contact.php">İletişim</a>
+                <a href="index.php">Ana Sayfa -</a>
+                <a href="products.php">Ürünler -</a>
+                <a href="contact.php">İletişim -</a>
 
                 <?php if ($username): ?>
                     <a href="logout.php"><i class="fa-regular fa-user"></i> Çıkış</a>
 
                     <?php if ($is_admin): ?>
                         <a href="addproducts.php">
-                            <button>Ürün Ekle</button>
-                        </a>
+                            <button>Ürün Ekle </button>
+                        </a>-
                         <a href="admin_approve.php">
                             <button>Sipariş Onay</button>
-                        </a>
+                        </a>-
                         <a href="discount_code_page.php">
                             <button>İndirim Kodu Sayfası</button>
-                        </a>
+                        </a>-
                     <?php endif; ?>
                     
                     <a href="orders.php">Siparişlerim</a>
