@@ -154,7 +154,6 @@ if (isset($_SESSION['username'])) {
             }
         }
 
-        /* Hoşgeldiniz bildirim stilleri */
         .welcome-notification {
             position: fixed;
             top: 10px;
@@ -217,12 +216,11 @@ if (isset($_SESSION['username'])) {
     <section class="chatbot-container" id="chatbotContainer">
         <div id="chatbox" class="chatbox">
             <div class="chatbox-messages" id="messages"></div>
-            <input type="text" id="userInput" placeholder="Mesajınızı yazın..." /><br>
+            <input type="text" id="userInput" placeholder="Mesajınızı yazın..." />
             <button onclick="sendMessage()">Gönder</button>
         </div>
     </section>
 
-    <!-- Sohbet Botu Toggle Butonu -->
     <button id="chatbotToggle" class="chatbot-toggle" onclick="toggleChatbot()">💬</button>
 
     <?php if ($username): ?>
@@ -237,61 +235,60 @@ if (isset($_SESSION['username'])) {
                     notification.classList.remove('show');
                 }, 5000);
             };
-             // Enter tuşu ile mesaj gönderme
     document.getElementById('userInput').addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
-            sendMessage();
-        }
-    });
 
     function sendMessage() {
-        const userInput = document.getElementById('userInput').value;
-        if (userInput.trim() === '') return;
-
-        // Kullanıcı mesajını ekle
-        const userMessage = document.createElement('div');
-        userMessage.classList.add('message', 'user', 'fade-in');
-        userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
         document.getElementById('messages').appendChild(userMessage);
 
-        // Kullanıcı mesajını temizle
-        document.getElementById('userInput').value = '';
 
-        // Bot cevabını kontrol et
-        let botReply = '';
-        if (userInput.toLowerCase() === 'merhaba') {
-            botReply = 'Merhaba işte!'; // Merhaba cevabı
-        } else {
-            botReply = 'Bunu anlayamadım. Yardım edebilir misin?'; // Bilinmeyen girişler için cevap
-        }
+            document.getElementById('userInput').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
 
-        // Bot mesajını ekle
-        const botMessage = document.createElement('div');
-        botMessage.classList.add('message', 'bot', 'fade-in');
-        botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
-        document.getElementById('messages').appendChild(botMessage);
+            function sendMessage() {
+                const userInput = document.getElementById('userInput').value;
+                if (userInput.trim() === '') return;
 
-        // Alt butonlar (Hakkımızda, İletişim, Ürünler)
-        if (userInput.toLowerCase() === 'merhaba') {
-            const optionsDiv = document.createElement('div');
-            optionsDiv.classList.add('bot-options');
-            optionsDiv.innerHTML = ` 
-                <button onclick="window.location.href='about.php'">Hakkımızda</button>
-                <button onclick="window.location.href='contact.php'">İletişim</button>
-                <button onclick="window.location.href='products.php'">Ürünler</button>
-            `;
-            document.getElementById('messages').appendChild(optionsDiv);
-        }
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('message', 'user', 'fade-in');
+                userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
+                document.getElementById('messages').appendChild(userMessage);
 
-        // Scroll en aşağı kaydır
-        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-    }
+                document.getElementById('userInput').value = '';
 
-    // Sohbet penceresini açıp kapatmak için fonksiyon
-    function toggleChatbot() {
-        const chatbotContainer = document.getElementById('chatbotContainer');
-        chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
-    }   
+                let botReply = '';
+                if (userInput.toLowerCase() === 'merhaba') {
+                    botReply = 'Merhaba işte!';
+                } else {
+                    botReply = 'Bunu anlayamadım. Yardım edebilir misin?';
+                }
+
+                const botMessage = document.createElement('div');
+                botMessage.classList.add('message', 'bot', 'fade-in');
+                botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
+                document.getElementById('messages').appendChild(botMessage);
+
+                if (userInput.toLowerCase() === 'merhaba') {
+                    const optionsDiv = document.createElement('div');
+                    optionsDiv.classList.add('bot-options');
+                    optionsDiv.innerHTML = `
+                        <button onclick="window.location.href='about.php'">Hakkımızda</button>
+                        <button onclick="window.location.href='suprize.php'">İNDİRİM!</button>
+                        <button onclick="window.location.href='products.php'">Ürünler</button>
+                    `;
+                    document.getElementById('messages').appendChild(optionsDiv);
+                }
+
+                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            }
+
+            function toggleChatbot() {
+                const chatbotContainer = document.getElementById('chatbotContainer');
+                chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
+            }
         </script>
     <?php endif; ?>
 
@@ -320,7 +317,6 @@ if (isset($_SESSION['username'])) {
                 height: auto;
                 border-radius: 10px;
             }
-            
         </style>
 
         <section class="featured">
@@ -338,39 +334,9 @@ if (isset($_SESSION['username'])) {
                     <img src="images/saat9.jpg" alt="Saat 3">
                     <h3>Farklı Tasarım</h3>
                 </div>
-                <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/saat9.jpg" alt="Saat 3">
-                    <h3>Farklı Tasarım</h3>
-                </div>
-            </div>
-        </section>
-        <section class="featured">
-            <h2>Öne Çıkan Saatler</h2>
-            <div class="product-grid">
-                <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/saat5.jpg" alt="Saat 1">
-                    <h3>Klasik Saat</h3>
-                </div>
-                <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/saat2.jpg" alt="Saat 2">
-                    <h3>Modern Saat</h3>
-                </div>
-                <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/saat9.jpg" alt="Saat 3">
-                    <h3>Farklı Tasarım</h3>
-                </div>
-                <div class="product" onclick="window.location.href='products.php';">
-                    <img src="images/saat9.jpg" alt="Saat 3">
-                    <h3>Farklı Tasarım</h3>
-                </div>
             </div>
         </section>
     </main>
-    <section class="large-slider">
-            <div class="slides"><a href="products.php"><img src="images/watch2.jpg" alt="Büyük Saat 1"></a></div>
-            <div class="slides"><a href="products.php"><img src="images/saat5.jpg" alt="Büyük Saat 2"></a></div>
-            <div class="slides"><a href="products.php"><img src="images/saat9.jpg" alt="Büyük Saat 3"></a></div>
-        </section>
 
     <footer>
         <div class="contact-location">
@@ -388,56 +354,5 @@ if (isset($_SESSION['username'])) {
             </div>
         </div>
     </footer>
-
-    <script>
-        function sendMessage() {
-            const userInput = document.getElementById('userInput').value;
-            if (userInput.trim() === '') return;
-
-            // Kullanıcı mesajını ekle
-            const userMessage = document.createElement('div');
-            userMessage.classList.add('message', 'user', 'fade-in');
-            userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
-            document.getElementById('messages').appendChild(userMessage);
-
-            // Kullanıcı mesajını temizle
-            document.getElementById('userInput').value = '';
-
-            // Bot cevabını kontrol et
-            let botReply = '';
-            if (userInput.toLowerCase() === 'merhaba') {
-                botReply = 'Merhaba işte!'; // Merhaba cevabı
-            } else {
-                botReply = 'Bunu anlayamadım. Yardım edebilir misin?'; // Bilinmeyen girişler için cevap
-            }
-
-            // Bot mesajını ekle
-            const botMessage = document.createElement('div');
-            botMessage.classList.add('message', 'bot', 'fade-in');
-            botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
-            document.getElementById('messages').appendChild(botMessage);
-
-            // Alt butonlar (Hakkımızda, İletişim, Ürünler)
-            if (userInput.toLowerCase() === 'merhaba') {
-                const optionsDiv = document.createElement('div');
-                optionsDiv.classList.add('bot-options');
-                optionsDiv.innerHTML = `
-                    <button onclick="window.location.href='about.php'">Hakkımızda</button>
-                    <button onclick="window.location.href='contact.php'">İletişim</button>
-                    <button onclick="window.location.href='suprize.php'">İNDİRİM</button>
-                `;
-                document.getElementById('messages').appendChild(optionsDiv);
-            }
-
-            // Scroll en aşağı kaydır
-            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-        }
-
-        // Sohbet penceresini açıp kapatmak için fonksiyon
-        function toggleChatbot() {
-            const chatbotContainer = document.getElementById('chatbotContainer');
-            chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
-        }
-    </script>
 </body>
 </html>

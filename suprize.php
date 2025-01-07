@@ -80,11 +80,11 @@
         @keyframes confettiAnimation {
             0% {
                 opacity: 1;
-                transform: translate(0, 0) rotate(0deg);
+                transform: translate(0, -100%) rotate(0deg);
             }
             100% {
                 opacity: 0;
-                transform: translate(300px, 500px) rotate(720deg);
+                transform: translate(0, 500px) rotate(720deg);
             }
         }
 
@@ -113,25 +113,25 @@
             box.classList.toggle("clicked");
 
             // Konfeti sayısı
-            const confettiCount = 250;
+            const confettiCount = 150;
 
             // Konfetileri oluşturma
             for (let i = 0; i < confettiCount; i++) {
                 const confetti = document.createElement("div");
                 confetti.classList.add("confetti");
                 confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.animationDuration = `${Math.random() * 2 + 3}s`;  // Konfeti hızını ayarlamak için
-                confetti.style.animationDelay = `${Math.random() * 2}s`;  // Konfeti gecikmesini ayarlamak için
+                confetti.style.animationDuration = `${Math.random() * 2 + 4}s`;  // Konfeti hızını ayarlamak için
+                confetti.style.animationDelay = `${Math.random() * 3}s`;  // Konfeti gecikmesini ayarlamak için
                 document.body.appendChild(confetti);
             }
 
             // Mesajın görünmesini sağla
             message.style.display = "block";
 
-            // 3 saniye sonra mesaj kaybolacak
+            // 5 saniye sonra mesaj kaybolacak
             setTimeout(function() {
                 message.style.display = "none";
-            }, 3000);
+            }, 5000);
         });
     </script>
 
