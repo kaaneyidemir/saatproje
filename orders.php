@@ -19,6 +19,21 @@ $stmt = $conn->prepare($sql);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Yorum ekleme işlemi
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($_POST['order_id'])) {
+    $comment = $_POST['comment'];
+    $orderId = $_POST['order_id'];
+
+    // Yorumun veritabanına kaydedilmesi
+    // Burada 'order_id' sütununu kontrol etmen önemli, 'id' yerine 'order_id' kullanman gerekebilir
+    $stmt = $conn->prepare("UPDATE orders SET comment = :comment WHERE order_id = :order_id");
+    $stmt->execute([':comment' => $comment, ':order_id' => $orderId]);
+
+    // Başarıyla kaydedildiyse sayfayı yenile
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -80,6 +95,35 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #777;
         }
 
+        .comment-form {
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .comment-form button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .comment-form button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +145,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Adet</th>
                     <th>Toplam Fiyat</th>
                     <th>Durum</th>
+                    <th>Yorum</th>
                 </tr>
                 <?php foreach ($orders as $order): ?>
                     <tr>
@@ -118,6 +163,20 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 echo "Tamamlandı";
                             }
                             ?>
+                        </td>
+                        <td>
+                            <?php if ($order['order_status'] == 'onaylandi'): ?>
+                                <!-- Yorum kutusunu sadece "Hazırlanıyor" durumunda göster -->
+                                <div class="comment-form">
+                                    <form action="" method="POST">
+                                        <textarea name="comment" placeholder="Yorumunuzu buraya yazın..." required></textarea>
+                                        <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
+                                        <button type="submit">Yorum Yap</button>
+                                    </form>
+                                </div>
+                            <?php else: ?>
+                                <?php echo $order['comment'] ? htmlspecialchars($order['comment']) : 'Yorum yapılmadı'; ?>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
