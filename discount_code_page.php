@@ -151,7 +151,7 @@ $baglanti->close();
             </div>
         <?php endif; ?>
 
-        <a href="admin_panel.php" style="display: block; margin-top: 20px; color: #4CAF50;">Admin Paneline Dön</a>
+        <a href="index.php" style="display: block; margin-top: 20px; color: #4CAF50;">Anasayfaya Dön</a>
     </div>
 </body>
 </html>
