@@ -25,6 +25,25 @@ if (isset($_GET['remove_id'])) {
     exit;
 }
 
+// İndirim kodu kontrolü
+$indirim_orani = 0;
+if (isset($_POST['apply_discount'])) {
+    $indirim_kodu = $_POST['discount_code'] ?? '';
+    $sql = "SELECT * FROM discount_codes WHERE code = ? AND used = 0";
+    $stmt = $baglanti->prepare($sql);
+    $stmt->bind_param("s", $indirim_kodu);
+    $stmt->execute();
+    $sonuc = $stmt->get_result()->fetch_assoc();
+
+    if ($sonuc) {
+        $indirim_orani = $sonuc['discount_percentage'];
+        $_SESSION['discount_code'] = $indirim_kodu;
+        $_SESSION['discount_percentage'] = $indirim_orani;
+    } else {
+        echo "<p style='color: red; text-align: center;'>Geçersiz veya kullanılmış indirim kodu!</p>";
+    }
+}
+
 // Satın alma işlemi
 if (isset($_POST['purchase'])) {
     $user_id = $_SESSION['user_id'] ?? 0; // Kullanıcı giriş yaptıysa ID'yi alın
@@ -45,7 +64,13 @@ if (isset($_POST['purchase'])) {
             $urun = $stmt->get_result()->fetch_assoc();
 
             if ($urun && $urun['stok'] >= $quantity) {
-                $urun_toplam = $urun['fiyat'] * $quantity; // Toplam fiyat hesapla
+                $urun_toplam = $urun['fiyat'] * $quantity;
+
+                // İndirim hesapla
+                if (isset($_SESSION['discount_percentage'])) {
+                    $indirim = ($urun_toplam * $_SESSION['discount_percentage']) / 100;
+                    $urun_toplam -= $indirim;
+                }
 
                 // Siparişi veritabanına ekle
                 $sql_insert = "INSERT INTO orders (user_id, product_id, quantity, total_price, status) VALUES (?, ?, ?, ?, 'pending')";
@@ -67,9 +92,15 @@ if (isset($_POST['purchase'])) {
             }
         }
 
-        // Eğer her şey başarılıysa, sepeti temizle
+        // Eğer her şey başarılıysa, sepeti temizle ve indirim kodunu işaretle
         if ($is_purchase_successful) {
-            $_SESSION['cart'] = [];
+            if (isset($_SESSION['discount_code'])) {
+                $sql_update_code = "UPDATE discount_codes SET used = 1 WHERE code = ?";
+                $stmt_update_code = $baglanti->prepare($sql_update_code);
+                $stmt_update_code->bind_param("s", $_SESSION['discount_code']);
+                $stmt_update_code->execute();
+            }
+            unset($_SESSION['cart'], $_SESSION['discount_code'], $_SESSION['discount_percentage']);
             echo "<p style='color: green; text-align: center;'>Satın alma işlemi başarıyla tamamlandı.</p>";
             echo "<div style='text-align: center; margin-top: 20px;'><a href='index.php' class='checkout-btn' style='padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 5px;'>Ana Sayfaya Dön</a></div>";
         }
@@ -132,7 +163,15 @@ $toplam_tutar = 0;
                 <?php endwhile; ?>
                 <div class="total">
                     Toplam Tutar: <?php echo number_format($toplam_tutar, 2); ?>&#8378;
+                    <?php if ($indirim_orani > 0): ?>
+                        <p>İndirim (%<?php echo $indirim_orani; ?>): -<?php echo number_format(($toplam_tutar * $indirim_orani) / 100, 2); ?>&#8378;</p>
+                        <p>İndirimli Tutar: <?php echo number_format($toplam_tutar - ($toplam_tutar * $indirim_orani) / 100, 2); ?>&#8378;</p>
+                    <?php endif; ?>
                 </div>
+                <form method="post" action="">
+                    <input type="text" name="discount_code" placeholder="İndirim kodu girin" required>
+                    <button type="submit" name="apply_discount" class="checkout-btn">İndirimi Uygula</button>
+                </form>
                 <form method="post" action="">
                     <button type="submit" name="purchase" class="checkout-btn">Satın Al</button>
                 </form>
