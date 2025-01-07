@@ -287,7 +287,33 @@ if (isset($_SESSION['username'])) {
                 </div>
             </div>
         </section>
+        <section class="featured">
+            <h2>Öne Çıkan Saatler</h2>
+            <div class="product-grid">
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat5.jpg" alt="Saat 1">
+                    <h3>Klasik Saat</h3>
+                </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat2.jpg" alt="Saat 2">
+                    <h3>Modern Saat</h3>
+                </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
+            </div>
+        </section>
     </main>
+    <section class="large-slider">
+            <div class="slides"><a href="products.php"><img src="images/watch2.jpg" alt="Büyük Saat 1"></a></div>
+            <div class="slides"><a href="products.php"><img src="images/saat5.jpg" alt="Büyük Saat 2"></a></div>
+            <div class="slides"><a href="products.php"><img src="images/saat9.jpg" alt="Büyük Saat 3"></a></div>
+        </section>
 
     <footer>
         <div class="contact-location">
