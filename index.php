@@ -19,8 +19,6 @@ if (isset($_SESSION['username'])) {
     <title>SAAT2M</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    
-
     <style>
         /* Sohbet Botu Stili */
         .chatbot-container {
@@ -69,7 +67,6 @@ if (isset($_SESSION['username'])) {
             background-color: #45a049;
         }
 
-        /* Sohbet Mesajı Stili */
         .message {
             margin-bottom: 10px;
             display: flex;
@@ -144,7 +141,6 @@ if (isset($_SESSION['username'])) {
             animation: marquee 15s linear infinite;
         }
 
-        /* Kaydırma animasyonu */
         @keyframes marquee {
             from {
                 transform: translateX(100%);
@@ -235,12 +231,6 @@ if (isset($_SESSION['username'])) {
                     notification.classList.remove('show');
                 }, 5000);
             };
-    document.getElementById('userInput').addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-
-    function sendMessage() {
-        document.getElementById('messages').appendChild(userMessage);
-
 
             document.getElementById('userInput').addEventListener('keyup', function(event) {
                 if (event.key === 'Enter') {
