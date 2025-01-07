@@ -236,6 +236,61 @@ if (isset($_SESSION['username'])) {
                     notification.classList.remove('show');
                 }, 5000);
             };
+             // Enter tuşu ile mesaj gönderme
+    document.getElementById('userInput').addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const userInput = document.getElementById('userInput').value;
+        if (userInput.trim() === '') return;
+
+        // Kullanıcı mesajını ekle
+        const userMessage = document.createElement('div');
+        userMessage.classList.add('message', 'user', 'fade-in');
+        userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
+        document.getElementById('messages').appendChild(userMessage);
+
+        // Kullanıcı mesajını temizle
+        document.getElementById('userInput').value = '';
+
+        // Bot cevabını kontrol et
+        let botReply = '';
+        if (userInput.toLowerCase() === 'merhaba') {
+            botReply = 'Merhaba işte!'; // Merhaba cevabı
+        } else {
+            botReply = 'Bunu anlayamadım. Yardım edebilir misin?'; // Bilinmeyen girişler için cevap
+        }
+
+        // Bot mesajını ekle
+        const botMessage = document.createElement('div');
+        botMessage.classList.add('message', 'bot', 'fade-in');
+        botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
+        document.getElementById('messages').appendChild(botMessage);
+
+        // Alt butonlar (Hakkımızda, İletişim, Ürünler)
+        if (userInput.toLowerCase() === 'merhaba') {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('bot-options');
+            optionsDiv.innerHTML = ` 
+                <button onclick="window.location.href='about.php'">Hakkımızda</button>
+                <button onclick="window.location.href='contact.php'">İletişim</button>
+                <button onclick="window.location.href='products.php'">Ürünler</button>
+            `;
+            document.getElementById('messages').appendChild(optionsDiv);
+        }
+
+        // Scroll en aşağı kaydır
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    // Sohbet penceresini açıp kapatmak için fonksiyon
+    function toggleChatbot() {
+        const chatbotContainer = document.getElementById('chatbotContainer');
+        chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
+    }   
         </script>
     <?php endif; ?>
 
@@ -264,6 +319,114 @@ if (isset($_SESSION['username'])) {
                 height: auto;
                 border-radius: 10px;
             }
+              /* Sohbet Botu Stili */
+    .chatbot-container {
+        position: fixed;
+        bottom: 10px;
+        right: 30px; /* Sağdan biraz ayırdık */
+        width: 300px;
+        z-index: 1000;
+        display: none; /* Başlangıçta gizle */
+    }
+
+    .chatbox {
+        background-color: #f1f1f1;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        height: 400px;
+        width: 100%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chatbox-messages {
+        overflow-y: scroll;
+        flex: 1;
+        margin-bottom: 10px;
+    }
+
+    .chatbox input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .chatbox button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .chatbox button:hover {
+        background-color: #45a049;
+    }
+
+    /* Sohbet Mesajı Stili */
+    .message {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .message.user {
+        justify-content: flex-end;
+    }
+
+    .message .message-bubble {
+        padding: 10px;
+        border-radius: 20px;
+        max-width: 70%;
+        font-size: 14px;
+    }
+
+    .message.bot .message-bubble {
+        background-color: #ddd;
+        color: #000;
+    }
+
+    .message.user .message-bubble {
+        background-color: #25d366;
+        color: white;
+    }
+
+    /* Fade-in animasyonu */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Sohbet butonu stili */
+    .chatbot-toggle {
+        position: fixed;
+        bottom: 10px;
+        right: 30px; /* Sağdan biraz ayırdık */
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        padding: 15px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .chatbot-toggle:hover {
+        background-color: #45a049;
+    }
         </style>
 
         <section class="featured">
