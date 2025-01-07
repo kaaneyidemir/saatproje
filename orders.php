@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($
                         <td>
                             <?php 
                             if ($order['order_status'] == 'onaylandi') {
-                                echo "Onaylandı, Hazırlanıyor";
+                                echo "Hazırlanıyor, Teslim Edildi";
                             } elseif ($order['order_status'] == 'pending') {
                                 echo "Beklemede";
                             } else {
