@@ -175,50 +175,31 @@ if (isset($_SESSION['username'])) {
                 transform: translateX(0);
             }
         }
-        .faq-container {
-        background-color: white;
-        border-top: 1px solid #ccc;
-        padding: 20px;
-        margin-top: 20px;
-    }
-
-    .faq-toggle {
-        background-color:rgb(0, 0, 0);
-        color: white;
-        border: none;
+        .faq-toggle {
+        background-color: #f1f1f1;
+        color: #333;
         padding: 15px;
         width: 100%;
         text-align: left;
         font-size: 18px;
         cursor: pointer;
+        border: 1px solid #ccc;
+        margin-bottom: 5px;
         border-radius: 5px;
     }
 
     .faq-toggle:hover {
-        background-color:rgb(255, 255, 255);
+        background-color: #ddd;
     }
 
     .faq-content {
         display: none;
-        padding: 15px;
+        padding: 10px 15px;
         background-color: #f9f9f9;
+        margin-top: 5px;
+        border: 1px solid #ccc;
         border-radius: 5px;
-        margin-top: 10px;
     }
-
-    .faq-content ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .faq-content li {
-        margin-bottom: 10px;
-    }
-
-    .faq-content p {
-        margin-left: 20px;
-    }
-
 
     </style>
 </head>
@@ -285,20 +266,20 @@ if (isset($_SESSION['username'])) {
             "iletişim": "Bizimle iletişime geçmek için <a href='contact.php'>İletişim Sayfası</a>'nı ziyaret edebilirsiniz.",
             "indirim": "İndirimlerimiz için <a href='suprize.php'>buraya göz atın</a>.",
             "hakkımızda": "Hakkımızda bilgi almak için <a href='about.php'>buraya tıklayın</a>.",
-    "yardım": "Sıkça sorulan sorulara göz atmak için <a href='sss.php'>burayı ziyaret edin</a>.",
-    "giriş": "Hesabınıza giriş yapmak için <a href='login.php'>Giriş Yap</a> sayfasına gidin.",
-    "kayıt": "Yeni hesap oluşturmak için <a href='register.php'>buradan kayıt olun</a>.",
-    "sepete_ekle": "Ürünü sepete eklemek için <a href='cart.php'>buraya tıklayın</a>.",
-    "sipariş_takip": "Siparişinizi takip etmek için <a href='order_tracking.php'>takip sayfası</a>'nı ziyaret edin.",
-    "blog": "Yazılarımızı okumak için <a href='blog.php'>Blog Sayfası</a>'na göz atabilirsiniz.",
-    "kampanyalar": "Güncel kampanyalarımız için <a href='campaigns.php'>kampanya sayfasını</a> ziyaret edin.",
-    "hesabım": "Hesap bilgilerinizi görmek için <a href='account.php'>Hesabım</a> sayfasına gidin.",
-    "çıkış": "Hesabınızdan çıkış yapmak için <a href='logout.php'>buraya tıklayın</a>.",
-    "şifre_sıfırla": "Şifrenizi sıfırlamak için <a href='reset_password.php'>şifre sıfırlama sayfası</a>'na gidin.",
-    "destek": "Canlı destek almak için <a href='support.php'>Destek Merkezi</a>'ne ulaşabilirsiniz.",
-    "fırsatlar": "Özel fırsatlar için <a href='offers.php'>Fırsatlar Sayfası</a>'na göz atın.",
-    "kategori": "Tüm kategorilerimize bakmak için <a href='categories.php'>Kategori Sayfası</a>'na gidin.",
-    "bize_yazın": "Görüş ve önerilerinizi paylaşmak için <a href='feedback.php'>Bize Yazın</a> sayfasını kullanabilirsiniz."
+            "yardım": "Sıkça sorulan sorulara göz atmak için <a href='sss.php'>burayı ziyaret edin</a>.",
+            "giriş": "Hesabınıza giriş yapmak için <a href='login.php'>Giriş Yap</a> sayfasına gidin.",
+            "kayıt": "Yeni hesap oluşturmak için <a href='register.php'>buradan kayıt olun</a>.",
+            "sepete_ekle": "Ürünü sepete eklemek için <a href='cart.php'>buraya tıklayın</a>.",
+            "sipariş_takip": "Siparişinizi takip etmek için <a href='order_tracking.php'>takip sayfası</a>'nı ziyaret edin.",
+           "blog": "Yazılarımızı okumak için <a href='blog.php'>Blog Sayfası</a>'na göz atabilirsiniz.",
+             "kampanyalar": "Güncel kampanyalarımız için <a href='campaigns.php'>kampanya sayfasını</a> ziyaret edin.",
+             "hesabım": "Hesap bilgilerinizi görmek için <a href='account.php'>Hesabım</a> sayfasına gidin.",
+            "çıkış": "Hesabınızdan çıkış yapmak için <a href='logout.php'>buraya tıklayın</a>.",
+                    "şifre_sıfırla": "Şifrenizi sıfırlamak için <a href='reset_password.php'>şifre sıfırlama sayfası</a>'na gidin.",
+              "destek": "Canlı destek almak için <a href='support.php'>Destek Merkezi</a>'ne ulaşabilirsiniz.",
+          "fırsatlar": "Özel fırsatlar için <a href='offers.php'>Fırsatlar Sayfası</a>'na göz atın.",
+                 "kategori": "Tüm kategorilerimize bakmak için <a href='categories.php'>Kategori Sayfası</a>'na gidin.",
+             "bize_yazın": "Görüş ve önerilerinizi paylaşmak için <a href='feedback.php'>Bize Yazın</a> sayfasını kullanabilirsiniz."
         };
 
         let botReply = botReplies[userInput.toLowerCase()] || "Üzgünüm, bunu anlayamadım. Daha fazla detay verebilir misiniz?";
@@ -332,8 +313,8 @@ if (isset($_SESSION['username'])) {
             sendMessage();
         }
     });
-    function toggleFAQ() {
-        const faqContent = document.getElementById('faq-content');
+    function toggleFAQ(index) {
+        const faqContent = document.getElementById('faq-content-' + index);
         faqContent.style.display = faqContent.style.display === 'block' ? 'none' : 'block';
     }
 </script>
@@ -459,19 +440,22 @@ if (isset($_SESSION['username'])) {
         </section>
     </main>
     <div class="faq-container">
-        <button class="faq-toggle" onclick="toggleFAQ()">Sıkça Sorulan Sorular</button>
-        <div id="faq-content" class="faq-content">
-            <ul>
-                <li><strong>Soru 1:</strong> Saatlerinizin garantisi var mı?</li>
-                <p>Her saat 2 yıl garanti kapsamındadır.</p>
-                <li><strong>Soru 2:</strong> Ürünlerinizin teslimat süresi ne kadar?</li>
-                <p>Ürünler 3-5 iş günü içinde teslim edilir.</p>
-                <li><strong>Soru 3:</strong> Hangi ödeme yöntemlerini kabul ediyorsunuz?</li>
-                <p>Kredi kartı, banka transferi ve PayPal ödeme yöntemlerini kabul ediyoruz.</p>
-            </ul>
-        </div>
+    <button class="faq-toggle" onclick="toggleFAQ(0)">Saatlerinizin garantisi var mı?</button>
+    <div id="faq-content-0" class="faq-content">
+        <p>Her saat 2 yıl garanti kapsamındadır.</p>
     </div>
     
+    <button class="faq-toggle" onclick="toggleFAQ(1)">Ürünlerinizin teslimat süresi ne kadar?</button>
+    <div id="faq-content-1" class="faq-content">
+        <p>Ürünler 3-5 iş günü içinde teslim edilir.</p>
+    </div>
+    
+    <button class="faq-toggle" onclick="toggleFAQ(2)"> Hangi ödeme yöntemlerini kabul ediyorsunuz?</button>
+    <div id="faq-content-2" class="faq-content">
+        <p>Kredi kartı, banka transferi ve PayPal ödeme yöntemlerini kabul ediyoruz.</p>
+    </div>
+</div>
+  
     
     
 
