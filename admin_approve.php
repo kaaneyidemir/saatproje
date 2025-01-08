@@ -1,38 +1,37 @@
 <?php
-error_reporting(E_ALL); // Tüm hataları göster
-ini_set('display_errors', 1); // Hataları ekran üzerinde göster
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-session_start(); // Oturum başlatma
-include('db.php'); // Veritabanı bağlantısını dahil et
+session_start();
+include('db.php');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-// Admin kontrolü
+require 'vendor/autoload.php';
+
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
     header("Location: index.php");
     exit();
 }
 
-// Sipariş onaylama işlemi
 if (isset($_GET['approve'])) {
-    $order_id = (int)$_GET['approve']; // Güvenlik için integer dönüşümü
-    // Sipariş bilgilerini al
-    $sql = "SELECT * FROM orders WHERE order_id = :id AND order_status = 'pending'";
+    $order_id = (int)$_GET['approve'];
+    $sql = "SELECT o.*, u.urun_adi, u.fiyat FROM orders o 
+            JOIN urunler u ON o.product_id = u.id 
+            WHERE o.order_id = :id AND o.order_status = 'pending'";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $order_id, PDO::PARAM_INT);
     $stmt->execute();
     $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($order) {
-        // Onaylandı olarak güncelle
         $sql_update = "UPDATE orders SET order_status = 'onaylandi' WHERE order_id = :id";
         $stmt_update = $conn->prepare($sql_update);
         $stmt_update->bindParam(':id', $order_id, PDO::PARAM_INT);
-        
+
         if ($stmt_update->execute()) {
-            // Ürün stokunu azalt
             $product_id = $order['product_id'];
             $quantity = $order['quantity'];
-
-            // Ürünün mevcut stok bilgisini al
             $sql_product = "SELECT * FROM urunler WHERE id = :product_id";
             $stmt_product = $conn->prepare($sql_product);
             $stmt_product->bindParam(':product_id', $product_id, PDO::PARAM_INT);
@@ -40,18 +39,61 @@ if (isset($_GET['approve'])) {
             $product = $stmt_product->fetch(PDO::FETCH_ASSOC);
 
             if ($product) {
-                // Stoktan düşür
                 $new_stock = $product['stok'] - $quantity;
                 if ($new_stock >= 0) {
-                    // Stok güncelleme
                     $sql_update_stock = "UPDATE urunler SET stok = :stok WHERE id = :product_id";
                     $stmt_update_stock = $conn->prepare($sql_update_stock);
                     $stmt_update_stock->bindParam(':stok', $new_stock, PDO::PARAM_INT);
                     $stmt_update_stock->bindParam(':product_id', $product_id, PDO::PARAM_INT);
                     if ($stmt_update_stock->execute()) {
-                        $_SESSION['message'] = "Sipariş başarıyla onaylandı ve stok güncellenmiştir.";
-                        header("Location: admin_approve.php"); // Sayfayı yenileyelim
-                        exit();
+                        $user_id = $order['user_id'];
+                        $sql_user = "SELECT * FROM users WHERE id = :user_id";
+                        $stmt_user = $conn->prepare($sql_user);
+                        $stmt_user->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                        $stmt_user->execute();
+                        $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
+
+                        if ($user) {
+                            $email = $user['email'];
+                            $username = $user['username'];
+                            $subject = "Sipariş Onaylandı";
+                            $total_price = $order['quantity'] * $order['fiyat'];
+                            $message = "Merhaba $username,\n\n"
+                                     . "Siparişiniz başarıyla onaylanmıştır. Ürününüz kısa süre içerisinde gönderilecektir.\n\n"
+                                     . "Sipariş Detayları:\n"
+                                     . "Ürün: " . $order['urun_adi'] . "\n"
+                                     . "Adet: " . $order['quantity'] . "\n"
+                                     . "Toplam Fiyat: " . number_format($total_price, 2) . "₺\n\n"
+                                     . "Teşekkürler!";
+
+                            $mail = new PHPMailer(true);
+                            try {
+                                $mail->isSMTP();
+                                $mail->Host = 'smtp.gmail.com';
+                                $mail->SMTPAuth = true;
+                                $mail->Username = 'eyidemirkaan@gmail.com';
+                                $mail->Password = 'xlse rbgr koso ahyx';
+                                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                                $mail->Port = 587;
+                                $mail->setFrom('youremail@example.com', 'Saat Satis');
+                                $mail->addAddress($email, $username);
+                                $mail->Subject = $subject;
+                                $mail->Body    = $message;
+                                $mail->send();
+
+                                $_SESSION['message'] = "Sipariş başarıyla onaylandı, e-posta gönderildi ve stok güncellenmiştir.";
+                                header("Location: admin_approve.php");
+                                exit();
+                            } catch (Exception $e) {
+                                $_SESSION['message'] = "E-posta gönderilemedi. Hata: {$mail->ErrorInfo}";
+                                header("Location: admin_approve.php");
+                                exit();
+                            }
+                        } else {
+                            $_SESSION['message'] = "Kullanıcı bilgileri alınamadı.";
+                            header("Location: admin_approve.php");
+                            exit();
+                        }
                     } else {
                         $_SESSION['message'] = "Stok güncelleme sırasında hata oluştu.";
                         header("Location: admin_approve.php");
@@ -79,7 +121,6 @@ if (isset($_GET['approve'])) {
     }
 }
 
-// Onaylanmamış ürünleri listele
 $sql = "SELECT o.*, u.urun_adi, u.fiyat, us.username FROM orders o 
         JOIN urunler u ON o.product_id = u.id 
         JOIN users us ON o.user_id = us.id 
@@ -99,81 +140,66 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
         }
         header {
-            background-color: #004d00;
-            color: white;
-            padding: 15px;
-            text-align: center;
+            background: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        nav a {
-            color: white;
-            margin: 0 15px;
+        header h1 {
+            margin: 0;
+        }
+        header nav a {
+            color: #fff;
             text-decoration: none;
-            font-weight: bold;
-        }
-        nav a:hover {
-            text-decoration: underline;
+            margin-left: 15px;
         }
         main {
             padding: 20px;
-            max-width: 1200px;
-            margin: auto;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 {
-            color: #333;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin: 20px 0;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        table, th, td {
+        table th, table td {
+            padding: 10px;
+            text-align: left;
             border: 1px solid #ddd;
         }
-        th, td {
-            padding: 12px;
-            text-align: center;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        a {
-            text-decoration: none;
+        table th {
+            background: #4CAF50;
             color: #fff;
-            background-color: #4CAF50;
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        a:hover {
-            background-color: #45a049;
         }
         .message {
             padding: 10px;
-            margin: 15px 0;
-            background-color: #ffdd57;
-            border-left: 5px solid #ff9c00;
-            color: #333;
-            border-radius: 3px;
+            margin-bottom: 20px;
+            background: #e7f3e7;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+            border-radius: 5px;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>AP</h1>
+        <h1>Admin Paneli</h1>
         <nav>
             <a href="index.php">Ana Sayfa</a>
             <a href="logout.php">Çıkış</a>
