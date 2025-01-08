@@ -4,16 +4,18 @@ session_start(); // Oturum başlatma
 // Kullanıcı giriş yaptıysa, oturum bilgilerini al
 if (isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
+    $user_id = $_SESSION['user_id'];  // Kullanıcı ID'si (veritabanından)
     $is_admin = ($_SESSION['username'] == 'admin' && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1);
 } else {
     $username = null;
+    $user_id = null;
     $is_admin = false;
 }
 
 include('db.php');
 
 // Yorumları veritabanından çekme ve kullanıcı adı bilgilerini almak için 'users' tablosunu ekleme
-$sql = "SELECT u.username, p.urun_adi, o.comment 
+$sql = "SELECT u.username, p.urun_adi, o.comment, o.like_count, o.dislike_count, o.order_id 
         FROM orders o 
         JOIN urunler p ON o.product_id = p.id
         JOIN users u ON o.user_id = u.id 
@@ -21,8 +23,49 @@ $sql = "SELECT u.username, p.urun_adi, o.comment
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Kullanıcının daha önce oy verip vermediğini kontrol et
+function hasVoted($order_id, $user_id, $conn) {
+    $sql = "SELECT * FROM votes WHERE order_id = :order_id AND user_id = :user_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':order_id', $order_id);
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->execute();
+    return $stmt->rowCount() > 0; // Eğer kullanıcı oylama yaptıysa, true döner
+}
+
+// Like ve Dislike işlemi
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset($_POST['action']) && $user_id) {
+    $order_id = $_POST['order_id'];
+    $action = $_POST['action'];
+
+    // Kullanıcının bu yorumu oylayıp oylamadığını kontrol et
+    if (!hasVoted($order_id, $user_id, $conn)) {
+        if ($action == 'like') {
+            $stmt = $conn->prepare("UPDATE orders SET like_count = like_count + 1 WHERE order_id = :order_id");
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->execute();
+            $stmt = $conn->prepare("INSERT INTO votes (order_id, user_id, vote) VALUES (:order_id, :user_id, 'like')");
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
+        } elseif ($action == 'dislike') {
+            $stmt = $conn->prepare("UPDATE orders SET dislike_count = dislike_count + 1 WHERE order_id = :order_id");
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->execute();
+            $stmt = $conn->prepare("INSERT INTO votes (order_id, user_id, vote) VALUES (:order_id, :user_id, 'dislike')");
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
+        }
+    }
+
+    header("Location: contact.php"); // Yönlendirme işlemi
+    exit();
+}
 ?>
 
+<!-- HTML Kısmı -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -129,6 +172,25 @@ $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border-color: transparent transparent #fff transparent;
         }
 
+        .like-dislike {
+            margin-top: 10px;
+        }
+
+        .like-dislike button {
+            padding: 5px 10px;
+            font-size: 14px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .like-dislike button:hover {
+            background-color: #45a049;
+        }
+
         .no-comments {
             text-align: center;
             font-size: 18px;
@@ -165,6 +227,20 @@ $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <span class="product-name"><?php echo htmlspecialchars($comment['urun_adi']); ?></span>
                     <div class="comment-text">
                         <?php echo nl2br(htmlspecialchars($comment['comment'])); ?>
+                    </div>
+                    <div class="like-dislike">
+                        <?php if (!$user_id || !hasVoted($comment['order_id'], $user_id, $conn)): ?>
+                            <form action="contact.php" method="POST" style="display: inline;">
+                                <input type="hidden" name="order_id" value="<?php echo $comment['order_id']; ?>">
+                                <button type="submit" name="action" value="like">Like (<?php echo $comment['like_count']; ?>)</button>
+                            </form>
+                            <form action="contact.php" method="POST" style="display: inline;">
+                                <input type="hidden" name="order_id" value="<?php echo $comment['order_id']; ?>">
+                                <button type="submit" name="action" value="dislike">Dislike (<?php echo $comment['dislike_count']; ?>)</button>
+                            </form>
+                        <?php else: ?>
+                            <p>Yorumunuza oy verdiniz!</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -187,7 +187,7 @@ if (isset($_SESSION['username'])) {
                 <a href="contact.php">İletişim |</a>
 
                 <?php if ($username): ?>
-                    <a href="logout.php"><i class="fa-regular fa-user"></i> Çıkış</a>
+                    <a href="logout.php"><i class="fa-solid fa-door-open"></i> Çıkış</a>
 
                     <?php if ($is_admin): ?>
                         <a href="addproducts.php">
@@ -203,7 +203,7 @@ if (isset($_SESSION['username'])) {
                     
                     <a href="orders.php">Siparişlerim</a>
                 <?php else: ?>
-                    <a href="login.php"><i class="fa-regular fa-user"></i> Giriş Yap</a>
+                    <a href="login.php"><i class="fa-solid fa-door-open"></i> Giriş Yap</a>
                 <?php endif; ?>
             </div>
         </nav>
