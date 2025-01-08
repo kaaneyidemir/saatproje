@@ -15,7 +15,7 @@ if (isset($_SESSION['username'])) {
 include('db.php');
 
 // Yorumları veritabanından çekme ve kullanıcı adı bilgilerini almak için 'users' tablosunu ekleme
-$sql = "SELECT u.username, p.urun_adi, o.comment, o.like_count, o.dislike_count, o.order_id 
+$sql = "SELECT u.username, p.urun_adi, o.comment, o.like_count, o.dislike_count, o.order_id, o.admin_response 
         FROM orders o 
         JOIN urunler p ON o.product_id = p.id
         JOIN users u ON o.user_id = u.id 
@@ -63,6 +63,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
     header("Location: contact.php"); // Yönlendirme işlemi
     exit();
 }
+
+// Admin cevabı işlemi
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['response']) && $is_admin) {
+    $order_id = $_POST['order_id'];
+    $response = $_POST['response'];
+
+    // Admin cevabını veritabanına kaydet
+    $stmt = $conn->prepare("UPDATE orders SET admin_response = :response WHERE order_id = :order_id");
+    $stmt->bindParam(':response', $response);
+    $stmt->bindParam(':order_id', $order_id);
+    $stmt->execute();
+
+    header("Location: contact.php"); // Yönlendirme işlemi
+    exit();
+}
 ?>
 
 <!-- HTML Kısmı -->
@@ -101,8 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
             margin: 0 10px;
             border-radius: 5px;
         }
-
-       
 
         main {
             padding: 20px;
@@ -194,6 +207,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
             font-size: 18px;
             color: #777;
         }
+
+        .response-form {
+            margin-top: 20px;
+        }
+
+        .response-form textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .response-form button {
+            padding: 10px 15px;
+            font-size: 14px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .response-form button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -209,15 +249,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
                 <a href="logout.php"><i class="fa-solid fa-door-open"></i> Çıkış</a>
 
                 <?php if ($is_admin): ?>
-                    <a href="addproducts.php">
-                        Ürün Ekle 
-                    </a>
-                    <a href="admin_approve.php">
-                     Sipariş Onay
-                    </a> 
-                    <a href="discount_code_page.php">
-                        İndirim Kodu Sayfası
-                    </a>
+                    <a href="addproducts.php">Ürün Ekle </a>
+                    <a href="admin_approve.php">Sipariş Onay</a>
+                    <a href="discount_code_page.php">İndirim Kodu Sayfası</a>
                 <?php endif; ?>
                 
                 <a href="orders.php">Siparişlerim</a>
@@ -228,36 +262,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
     </nav>
 </header>
 
-
-    <main>
-        <h2>Tüm Yorumlar</h2>
-        <?php if (!empty($comments)): ?>
-            <?php foreach ($comments as $comment): ?>
-                <div class="comment-container">
-                    <strong><?php echo htmlspecialchars($comment['username']); ?></strong>
-                    <span class="product-name"><?php echo htmlspecialchars($comment['urun_adi']); ?></span>
-                    <div class="comment-text">
-                        <?php echo nl2br(htmlspecialchars($comment['comment'])); ?>
-                    </div>
-                    <div class="like-dislike">
-                        <?php if (!$user_id || !hasVoted($comment['order_id'], $user_id, $conn)): ?>
-                            <form action="contact.php" method="POST" style="display: inline;">
-                                <input type="hidden" name="order_id" value="<?php echo $comment['order_id']; ?>">
-                                <button type="submit" name="action" value="like">Like (<?php echo $comment['like_count']; ?>)</button>
-                            </form>
-                            <form action="contact.php" method="POST" style="display: inline;">
-                                <input type="hidden" name="order_id" value="<?php echo $comment['order_id']; ?>">
-                                <button type="submit" name="action" value="dislike">Dislike (<?php echo $comment['dislike_count']; ?>)</button>
-                            </form>
-                        <?php else: ?>
-                            <p>Yorumunuza oy verdiniz!</p>
-                        <?php endif; ?>
-                    </div>
+<main>
+    <h2>Tüm Yorumlar</h2>
+    <?php if (!empty($comments)): ?>
+        <?php foreach ($comments as $comment): ?>
+            <div class="comment-container">
+                <strong><?php echo htmlspecialchars($comment['username']); ?></strong>
+                <span class="product-name"><?php echo htmlspecialchars($comment['urun_adi']); ?></span>
+                <div class="comment-text">
+                    <?php echo nl2br(htmlspecialchars($comment['comment'])); ?>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p class="no-comments">Henüz yorum yapılmamıştır.</p>
-        <?php endif; ?>
-    </main>
+                <div class="like-dislike">
+                    <?php if (!$user_id || !hasVoted($comment['order_id'], $user_id, $conn)): ?>
+                        <form action="contact.php" method="POST" style="display: inline;">
+                            <input type="hidden" name="order_id" value="<?php echo $comment['order_id']; ?>">
+                            <button type="submit" name="action" value="like">Like (<?php echo $comment['like_count']; ?>)</button>
+                        </form>
+                        <form action="contact.php" method="POST" style="display: inline;">
+                            <input type="hidden" name="order_id" value="<?php echo $comment['order_id']; ?>">
+                            <button type="submit" name="action" value="dislike">Dislike (<?php echo $comment['dislike_count']; ?>)</button>
+                        </form>
+                    <?php else: ?>
+                        <p>Yorumunuza oy verdiniz!</p>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ($is_admin && $comment['admin_response'] === null): ?>
+                    <form action="contact.php" method="POST">
+                        <input type="hidden" name="order_id" value="<?php echo $comment['order_id']; ?>">
+                        <textarea name="response" rows="4" placeholder="Admin cevabınızı yazın..." required></textarea><br>
+                        <button type="submit">Yanıtla</button>
+                    </form>
+                <?php elseif ($comment['admin_response'] !== null): ?>
+                    <p><strong>Admin Cevabı:</strong> <?php echo nl2br(htmlspecialchars($comment['admin_response'])); ?></p>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p class="no-comments">Henüz yorum yapılmamıştır.</p>
+    <?php endif; ?>
+</main>
 </body>
 </html>
