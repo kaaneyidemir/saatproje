@@ -175,6 +175,51 @@ if (isset($_SESSION['username'])) {
                 transform: translateX(0);
             }
         }
+        .faq-container {
+        background-color: white;
+        border-top: 1px solid #ccc;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .faq-toggle {
+        background-color:rgb(0, 0, 0);
+        color: white;
+        border: none;
+        padding: 15px;
+        width: 100%;
+        text-align: left;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .faq-toggle:hover {
+        background-color:rgb(255, 255, 255);
+    }
+
+    .faq-content {
+        display: none;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .faq-content ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .faq-content li {
+        margin-bottom: 10px;
+    }
+
+    .faq-content p {
+        margin-left: 20px;
+    }
+
+
     </style>
 </head>
 <body>
@@ -226,62 +271,123 @@ if (isset($_SESSION['username'])) {
             Hoşgeldiniz, <?php echo $username; ?>!
         </div>
         <script>
-            window.onload = function() {
-                const notification = document.getElementById('welcomeNotification');
-                notification.classList.add('show');
-                setTimeout(function() {
-                    notification.classList.remove('show');
-                }, 5000);
-            };
+    // Kullanıcı mesaj gönderme işlemi
+    function sendMessage() {
+        const userInput = document.getElementById('userInput').value.trim();
+        if (userInput === '') return;
 
-            document.getElementById('userInput').addEventListener('keyup', function(event) {
-                if (event.key === 'Enter') {
-                    sendMessage();
-                }
-            });
+        appendMessage('user', userInput);
 
-            function sendMessage() {
-                const userInput = document.getElementById('userInput').value;
-                if (userInput.trim() === '') return;
+        // Kullanıcının yazdığı mesaja göre cevaplar
+        const botReplies = {
+            "merhaba": "Merhaba! Size nasıl yardımcı olabilirim?",
+            "ürünler": "Ürünlerimizi görmek için <a href='products.php'>buraya tıklayın</a>.",
+            "iletişim": "Bizimle iletişime geçmek için <a href='contact.php'>İletişim Sayfası</a>'nı ziyaret edebilirsiniz.",
+            "indirim": "İndirimlerimiz için <a href='suprize.php'>buraya göz atın</a>.",
+            "hakkımızda": "Hakkımızda bilgi almak için <a href='about.php'>buraya tıklayın</a>.",
+    "yardım": "Sıkça sorulan sorulara göz atmak için <a href='sss.php'>burayı ziyaret edin</a>.",
+    "giriş": "Hesabınıza giriş yapmak için <a href='login.php'>Giriş Yap</a> sayfasına gidin.",
+    "kayıt": "Yeni hesap oluşturmak için <a href='register.php'>buradan kayıt olun</a>.",
+    "sepete_ekle": "Ürünü sepete eklemek için <a href='cart.php'>buraya tıklayın</a>.",
+    "sipariş_takip": "Siparişinizi takip etmek için <a href='order_tracking.php'>takip sayfası</a>'nı ziyaret edin.",
+    "blog": "Yazılarımızı okumak için <a href='blog.php'>Blog Sayfası</a>'na göz atabilirsiniz.",
+    "kampanyalar": "Güncel kampanyalarımız için <a href='campaigns.php'>kampanya sayfasını</a> ziyaret edin.",
+    "hesabım": "Hesap bilgilerinizi görmek için <a href='account.php'>Hesabım</a> sayfasına gidin.",
+    "çıkış": "Hesabınızdan çıkış yapmak için <a href='logout.php'>buraya tıklayın</a>.",
+    "şifre_sıfırla": "Şifrenizi sıfırlamak için <a href='reset_password.php'>şifre sıfırlama sayfası</a>'na gidin.",
+    "destek": "Canlı destek almak için <a href='support.php'>Destek Merkezi</a>'ne ulaşabilirsiniz.",
+    "fırsatlar": "Özel fırsatlar için <a href='offers.php'>Fırsatlar Sayfası</a>'na göz atın.",
+    "kategori": "Tüm kategorilerimize bakmak için <a href='categories.php'>Kategori Sayfası</a>'na gidin.",
+    "bize_yazın": "Görüş ve önerilerinizi paylaşmak için <a href='feedback.php'>Bize Yazın</a> sayfasını kullanabilirsiniz."
+        };
 
-                const userMessage = document.createElement('div');
-                userMessage.classList.add('message', 'user', 'fade-in');
-                userMessage.innerHTML = <div class="message-bubble">${userInput}</div>;
-                document.getElementById('messages').appendChild(userMessage);
+        let botReply = botReplies[userInput.toLowerCase()] || "Üzgünüm, bunu anlayamadım. Daha fazla detay verebilir misiniz?";
+        appendMessage('bot', botReply);
 
-                document.getElementById('userInput').value = '';
+        // Temizle
+        document.getElementById('userInput').value = '';
+    }
 
-                let botReply = '';
-                if (userInput.toLowerCase() === 'merhaba') {
-                    botReply = 'Merhaba işte!';
-                } else {
-                    botReply = 'Bunu anlayamadım. Yardım edebilir misin?';
-                }
+    // Mesajları ekrana yazdırma
+    function appendMessage(sender, message) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', sender, 'fade-in');
+        messageElement.innerHTML = `<div class="message-bubble">${message}</div>`;
+        const chatMessages = document.getElementById('messages');
+        chatMessages.appendChild(messageElement);
 
-                const botMessage = document.createElement('div');
-                botMessage.classList.add('message', 'bot', 'fade-in');
-                botMessage.innerHTML = <div class="message-bubble">${botReply}</div>;
-                document.getElementById('messages').appendChild(botMessage);
+        // En alta kaydır
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-                if (userInput.toLowerCase() === 'merhaba') {
-                    const optionsDiv = document.createElement('div');
-                    optionsDiv.classList.add('bot-options');
-                    optionsDiv.innerHTML = 
-                        <button onclick="window.location.href='about.php'">Hakkımızda</button>
-                        <button onclick="window.location.href='suprize.php'">İNDİRİM!</button>
-                        <button onclick="window.location.href='products.php'">Ürünler</button>
-                    ;
-                    document.getElementById('messages').appendChild(optionsDiv);
-                }
+    // Chatbot görünümünü aç/kapa
+    function toggleChatbot() {
+        const chatbotContainer = document.getElementById('chatbotContainer');
+        chatbotContainer.style.display = chatbotContainer.style.display === 'block' ? 'none' : 'block';
+    }
 
-                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-            }
+    // Enter tuşuyla mesaj gönderme
+    document.getElementById('userInput').addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    function toggleFAQ() {
+        const faqContent = document.getElementById('faq-content');
+        faqContent.style.display = faqContent.style.display === 'block' ? 'none' : 'block';
+    }
+</script>
 
-            function toggleChatbot() {
-                const chatbotContainer = document.getElementById('chatbotContainer');
-                chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
-            }
-        </script>
+<style>
+    /* Chatbot kutusunun modern görünümü */
+    .chatbox {
+        background: linear-gradient(145deg, #ffffff, #dcdcdc);
+        box-shadow: 5px 5px 15px #bababa, -5px -5px 15px #ffffff;
+        font-family: Arial, sans-serif;
+    }
+
+    .chatbox-messages {
+        padding: 10px;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .chatbox input {
+        margin-top: 10px;
+        background-color: #e8e8e8;
+        box-shadow: inset 2px 2px 5px #bababa, inset -2px -2px 5px #ffffff;
+    }
+
+    .chatbox button {
+        background: linear-gradient(145deg, #56c057, #48a94c);
+        box-shadow: 2px 2px 5px #3d7e40, -2px -2px 5px #6ad76a;
+    }
+
+    .chatbox button:hover {
+        background: #48a94c;
+    }
+
+    .message-bubble {
+        border-radius: 15px;
+        padding: 10px 15px;
+    }
+
+    .message.bot .message-bubble {
+        background-color: #f0f0f0;
+        color: #000;
+    }
+
+    .message.user .message-bubble {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .chatbot-toggle {
+        background: linear-gradient(145deg, #48a94c, #56c057);
+        box-shadow: 3px 3px 10px #3d7e40, -3px -3px 10px #6ad76a;
+    }
+</style>
+
     <?php endif; ?>
 
     <main>
@@ -352,6 +458,22 @@ if (isset($_SESSION['username'])) {
             </div>
         </section>
     </main>
+    <div class="faq-container">
+        <button class="faq-toggle" onclick="toggleFAQ()">Sıkça Sorulan Sorular</button>
+        <div id="faq-content" class="faq-content">
+            <ul>
+                <li><strong>Soru 1:</strong> Saatlerinizin garantisi var mı?</li>
+                <p>Her saat 2 yıl garanti kapsamındadır.</p>
+                <li><strong>Soru 2:</strong> Ürünlerinizin teslimat süresi ne kadar?</li>
+                <p>Ürünler 3-5 iş günü içinde teslim edilir.</p>
+                <li><strong>Soru 3:</strong> Hangi ödeme yöntemlerini kabul ediyorsunuz?</li>
+                <p>Kredi kartı, banka transferi ve PayPal ödeme yöntemlerini kabul ediyoruz.</p>
+            </ul>
+        </div>
+    </div>
+    
+    
+    
 
     <footer>
         <div class="contact-location">

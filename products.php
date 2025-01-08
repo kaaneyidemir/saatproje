@@ -210,7 +210,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
         </script>
     <?php endif; ?>
 
-    <h1>Ürün Listesi</h1>
+    <h1>LionLustrous NEW!</h1>
     <div class="container">
         <div class="card-deck">
             <?php
