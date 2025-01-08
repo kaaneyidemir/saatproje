@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // Sipariş geçmişini sorgulama
-$sql = "SELECT o.*, u.urun_adi, u.fiyat FROM orders o JOIN urunler u ON o.product_id = u.id WHERE o.user_id = :user_id";
+$sql = "SELECT o.*, u.urun_adi, u.fiyat, u.id as product_id, o.comment FROM orders o JOIN urunler u ON o.product_id = u.id WHERE o.user_id = :user_id";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
@@ -22,15 +22,24 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Yorum ekleme işlemi
 $commentAdded = false;
+$commentFormHidden = false;  // Yeni değişken ekledik
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($_POST['order_id'])) {
     $comment = $_POST['comment'];
     $orderId = $_POST['order_id'];
 
-    // Yorumun veritabanına kaydedilmesi
-    $stmt = $conn->prepare("UPDATE orders SET comment = :comment WHERE order_id = :order_id");
-    $stmt->execute([':comment' => $comment, ':order_id' => $orderId]);
+    // Kullanıcı daha önce yorum yapmış mı kontrol et
+    $stmt = $conn->prepare("SELECT comment FROM orders WHERE order_id = :order_id AND user_id = :user_id");
+    $stmt->execute([':order_id' => $orderId, ':user_id' => $user_id]);
+    $existingComment = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $commentAdded = true;
+    if (!$existingComment['comment']) {
+        // Yorumun veritabanına kaydedilmesi
+        $stmt = $conn->prepare("UPDATE orders SET comment = :comment WHERE order_id = :order_id");
+        $stmt->execute([':comment' => $comment, ':order_id' => $orderId]);
+
+        $commentAdded = true;
+        $commentFormHidden = true; // Yorum yapıldıysa formu gizleyelim
+    }
 }
 ?>
 
@@ -180,16 +189,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($
                             ?>
                         </td>
                         <td>
-                            <?php if ($order['order_status'] == 'onaylandi'): ?>
-                                <div class="comment-form">
-                                    <form action="" method="POST">
-                                        <textarea name="comment" placeholder="Yorumunuzu buraya yazın..." required></textarea>
-                                        <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
-                                        <button type="submit">Yorum Yap</button>
-                                    </form>
-                                </div>
-                            <?php else: ?>
-                                <?php echo $order['comment'] ? htmlspecialchars($order['comment']) : 'Yorum yapılmadı'; ?>
+                            <?php if (!$order['comment'] && !$commentFormHidden): ?>
+                                <?php if ($order['order_status'] == 'onaylandi'): ?>
+                                    <div class="comment-form">
+                                        <form action="" method="POST">
+                                            <textarea name="comment" placeholder="Yorumunuzu buraya yazın..." required></textarea>
+                                            <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
+                                            <button type="submit">Yorum Yap</button>
+                                        </form>
+                                    </div>
+                                <?php endif; ?>
+                            <?php elseif ($order['comment']): ?>
+                                <p><?php echo htmlspecialchars($order['comment']); ?></p>
                             <?php endif; ?>
                         </td>
                     </tr>

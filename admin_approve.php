@@ -56,7 +56,7 @@ if (isset($_GET['approve'])) {
                         if ($user) {
                             $email = $user['email'];
                             $username = $user['username'];
-                            $subject = "Sipariş Onaylandı";
+                            $subject = "Siparis Onaylandi";
                             $total_price = $order['quantity'] * $order['fiyat'];
                             $message = "Merhaba $username,\n\n"
                                      . "Siparişiniz başarıyla onaylanmıştır. Ürününüz kısa süre içerisinde gönderilecektir.\n\n"

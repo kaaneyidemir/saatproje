@@ -199,7 +199,7 @@ if (isset($_SESSION['username'])) {
                         <a href="discount_code_page.php">
                             İndirim Kodu Sayfası
                         </a>|
-                    <?php endif; ?>|
+                    <?php endif; ?>
                     
                     <a href="orders.php">Siparişlerim</a>
                 <?php else: ?>
@@ -244,7 +244,7 @@ if (isset($_SESSION['username'])) {
 
                 const userMessage = document.createElement('div');
                 userMessage.classList.add('message', 'user', 'fade-in');
-                userMessage.innerHTML = `<div class="message-bubble">${userInput}</div>`;
+                userMessage.innerHTML = <div class="message-bubble">${userInput}</div>;
                 document.getElementById('messages').appendChild(userMessage);
 
                 document.getElementById('userInput').value = '';
@@ -258,17 +258,17 @@ if (isset($_SESSION['username'])) {
 
                 const botMessage = document.createElement('div');
                 botMessage.classList.add('message', 'bot', 'fade-in');
-                botMessage.innerHTML = `<div class="message-bubble">${botReply}</div>`;
+                botMessage.innerHTML = <div class="message-bubble">${botReply}</div>;
                 document.getElementById('messages').appendChild(botMessage);
 
                 if (userInput.toLowerCase() === 'merhaba') {
                     const optionsDiv = document.createElement('div');
                     optionsDiv.classList.add('bot-options');
-                    optionsDiv.innerHTML = `
+                    optionsDiv.innerHTML = 
                         <button onclick="window.location.href='about.php'">Hakkımızda</button>
                         <button onclick="window.location.href='suprize.php'">İNDİRİM!</button>
                         <button onclick="window.location.href='products.php'">Ürünler</button>
-                    `;
+                    ;
                     document.getElementById('messages').appendChild(optionsDiv);
                 }
 
@@ -324,6 +324,29 @@ if (isset($_SESSION['username'])) {
                     <img src="images/saat9.jpg" alt="Saat 3">
                     <h3>Farklı Tasarım</h3>
                 </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
+                <div class="product" onclick="window.location.href='products.php';">
+                    <img src="images/saat9.jpg" alt="Saat 3">
+                    <h3>Farklı Tasarım</h3>
+                </div>
+
+                
+                
             </div>
         </section>
     </main>
