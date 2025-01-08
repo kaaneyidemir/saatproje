@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
         }
 
         header {
-            background-color: #4CAF50;
+            background-color:rgb(9, 65, 11);
             color: white;
             padding: 10px 0;
             text-align: center;
@@ -102,9 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
             border-radius: 5px;
         }
 
-        nav a:hover {
-            background-color: #45a049;
-        }
+       
 
         main {
             padding: 20px;
@@ -199,24 +197,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
     </style>
 </head>
 <body>
-    <header>
-        <h1><a href="index.php"><img src="./images/logo.png" alt="" style="width:50px"></a></h1>
-        <nav>
-            <a href="index.php">Ana Sayfa</a>
-            <a href="products.php">Ürünler</a>
-            <a href="contact.php">İletişim</a>
+<header>
+    <h1><a href="index.php"><img src="./images/logo2.png" alt="" style="width:50px"></a></h1>
+    <nav style="display: flex; justify-content: center; width: 100%;">
+        <div style="display: flex; gap: 20px;">
+            <a href="index.php">Ana Sayfa </a>
+            <a href="products.php">Ürünler </a>
+            <a href="contact.php">İletişim </a>
+
             <?php if ($username): ?>
-                <a href="logout.php"><i class="fa-regular fa-user"></i> Çıkış</a>
+                <a href="logout.php"><i class="fa-solid fa-door-open"></i> Çıkış</a>
+
                 <?php if ($is_admin): ?>
-                    <a href="addproducts.php"><button>Ürün Ekle</button></a>
-                    <a href="admin_approve.php"><button>Sipariş Onay</button></a>
+                    <a href="addproducts.php">
+                        Ürün Ekle 
+                    </a>
+                    <a href="admin_approve.php">
+                     Sipariş Onay
+                    </a> 
+                    <a href="discount_code_page.php">
+                        İndirim Kodu Sayfası
+                    </a>
                 <?php endif; ?>
+                
                 <a href="orders.php">Siparişlerim</a>
             <?php else: ?>
-                <a href="login.php"><i class="fa-regular fa-user"></i> Giriş Yap</a>
+                <a href="login.php"><i class="fa-solid fa-door-open"></i> Giriş Yap</a>
             <?php endif; ?>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
+
 
     <main>
         <h2>Tüm Yorumlar</h2>
