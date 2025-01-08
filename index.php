@@ -185,6 +185,7 @@ if (isset($_SESSION['username'])) {
             <a href="index.php">Ana Sayfa </a>
             <a href="products.php">Ürünler </a>
             <a href="contact.php">İletişim </a>
+            <a href="profile.php">Profil</a>
 
             <?php if ($username): ?>
                 <a href="logout.php"><i class="fa-solid fa-door-open"></i> Çıkış</a>

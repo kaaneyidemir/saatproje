@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </main>
 
     <footer>
-        <p>&copy; 2025 SAAT2M</p>
+        
     </footer>
 </body>
 </html>
