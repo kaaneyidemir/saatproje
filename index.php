@@ -199,7 +199,7 @@ if (isset($_SESSION['username'])) {
                         <a href="discount_code_page.php">
                             İndirim Kodu Sayfası
                         </a>|
-                    <?php endif; ?>
+                    <?php endif; ?>|
                     
                     <a href="orders.php">Siparişlerim</a>
                 <?php else: ?>

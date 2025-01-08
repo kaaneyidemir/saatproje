@@ -21,18 +21,16 @@ $stmt->execute();
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Yorum ekleme işlemi
+$commentAdded = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($_POST['order_id'])) {
     $comment = $_POST['comment'];
     $orderId = $_POST['order_id'];
 
     // Yorumun veritabanına kaydedilmesi
-    // Burada 'order_id' sütununu kontrol etmen önemli, 'id' yerine 'order_id' kullanman gerekebilir
     $stmt = $conn->prepare("UPDATE orders SET comment = :comment WHERE order_id = :order_id");
     $stmt->execute([':comment' => $comment, ':order_id' => $orderId]);
 
-    // Başarıyla kaydedildiyse sayfayı yenile
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
+    $commentAdded = true;
 }
 ?>
 
@@ -124,6 +122,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($
         .comment-form button:hover {
             background-color: #45a049;
         }
+
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .notification.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -166,7 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($
                         </td>
                         <td>
                             <?php if ($order['order_status'] == 'onaylandi'): ?>
-                                <!-- Yorum kutusunu sadece "Hazırlanıyor" durumunda göster -->
                                 <div class="comment-form">
                                     <form action="" method="POST">
                                         <textarea name="comment" placeholder="Yorumunuzu buraya yazın..." required></textarea>
@@ -185,5 +199,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($
             <p>Henüz siparişiniz bulunmamaktadır.</p>
         <?php endif; ?>
     </main>
+
+    <div id="notification" class="notification">Yorumunuz başarıyla kaydedildi!</div>
+
+    <script>
+        <?php if ($commentAdded): ?>
+        const notification = document.getElementById('notification');
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+        <?php endif; ?>
+    </script>
 </body>
 </html>
