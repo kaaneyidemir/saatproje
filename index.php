@@ -179,36 +179,36 @@ if (isset($_SESSION['username'])) {
 </head>
 <body>
 <header>
-    <h1><a href="index.php"><img src="./images/logo2.png" alt="" style="width:50px"></a></h1>
-    <nav style="display: flex; justify-content: center; width: 100%;">
-        <div style="display: flex; gap: 20px;">
-            <a href="index.php">Ana Sayfa </a>
-            <a href="products.php">Ürünler </a>
-            <a href="contact.php">İletişim </a>
-            <a href="profile.php">Profil</a>
 
+<h1><a href="index.php"><img src="./images/logo2.png" alt="" style="width:50px"></a></h1>
+    <nav style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+        <div style="display: flex; gap:70px; justify-content: center; flex-grow: 1; ">
+            <a href="index.php">Ana Sayfa</a>
+            <a href="products.php">Ürünler</a>
+            <a href="contact.php">İletişim</a>
+        </div>
+        <div style="display: flex; gap: 30px;">
             <?php if ($username): ?>
-                <a href="logout.php"><i class="fa-solid fa-door-open"></i> Çıkış</a>
+              
 
                 <?php if ($is_admin): ?>
-                    <a href="addproducts.php">
-                        Ürün Ekle 
-                    </a>
-                    <a href="admin_approve.php">
-                     Sipariş Onay
-                    </a> 
-                    <a href="discount_code_page.php">
-                        İndirim Kodu Sayfası
-                    </a>
+                    <a href="addproducts.php">Ürün Ekle</a>
+                    <a href="admin_approve.php">Sipariş Onay</a>
+                    <a href="discount_code_page.php">İndirim Kodu Sayfası</a>
                 <?php endif; ?>
                 
                 <a href="orders.php">Siparişlerim</a>
+                <a href="profile.php">Profil</a> <!-- Profil butonu eklendi -->
+                <a href="logout.php"><i class="fa-solid fa-door-open"></i> Çıkış</a>
             <?php else: ?>
                 <a href="login.php"><i class="fa-solid fa-door-open"></i> Giriş Yap</a>
             <?php endif; ?>
         </div>
     </nav>
+
+    
 </header>
+
 
 
     <section class="chatbot-container" id="chatbotContainer">
