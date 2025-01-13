@@ -455,7 +455,7 @@ if (isset($_SESSION['username'])) {
         <p>Kredi kartı, banka transferi ve PayPal ödeme yöntemlerini kabul ediyoruz.</p>
     </div>
 </div>
-  
+<button onclick="window.location.href='ortaklarimiz.php';">Ortaklarımız</button>
     
     
 
@@ -475,5 +475,6 @@ if (isset($_SESSION['username'])) {
             </div>
         </div>
     </footer>
+    
 </body>
 </html>
