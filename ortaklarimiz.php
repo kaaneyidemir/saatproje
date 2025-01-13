@@ -1,9 +1,15 @@
 <?php
 // Dinamik olarak eklemek istediğiniz yazıları burada belirleyebilirsiniz.
 $messages = [
-    "İlk mesajınız buraya gelecek.",
-    "İkinci mesajınız burada görünecek.",
-    "Üçüncü mesajınız burada kayacak.",
+    "Ortaklarimiz",
+    ];
+
+// Dinamik olarak resim URL'lerini ekleyebilirsiniz.
+$images = [
+    "images/EternalGlimmer(logo).jpg", // Resim 1 (Yerel resim)
+    "images/EclipseFlux.jpg", // Resim 1 (Yerel resim)
+    "images/TemporalPhantom.jpg", // Resim 1 (Yerel resim)
+    
 ];
 ?>
 
@@ -17,7 +23,7 @@ $messages = [
         body {
             margin: 0;
             padding: 0;
-            background-color: #004d00; /* Koyu yeşil arka plan */
+            background-color:rgb(0, 0, 0); /* Koyu yeşil arka plan */
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -50,15 +56,15 @@ $messages = [
                 transform: translateY(-100%); /* Başlangıçta ekranın dışında */
             }
             100% {
-                transform: translateY(550%); /* Ekranın alt kısmına kayacak */
+                transform: translateY(100%); /* Ekranın alt kısmına kayacak */
             }
         }
 
         .marquee img {
             display: block;
             margin: 10px auto; /* Resimleri ortalar */
-            width: 50px; /* Resim boyutunu ayarlayabilirsiniz */
-            height: 50px;
+            width: 200px; /* Resim boyutunu ayarlayabilirsiniz */
+            height: 150px;
         }
     </style>
 </head>
@@ -66,11 +72,14 @@ $messages = [
     <div class="marquee-container">
         <div class="marquee">
             <?php
-            // Kayan yazı mesajlarını ve resimleri PHP ile dinamik olarak ekleyin
+            // Kayan yazı mesajlarını PHP ile ekleyin
             foreach ($messages as $message) {
                 echo "<p>" . $message . "</p>"; // Yazıları ekler
-                // Resim eklemek isterseniz:
-                // echo "<img src='your-image-url.jpg' alt='Resim'>";
+            }
+
+            // Resimlerinizi PHP ile ekleyin
+            foreach ($images as $image) {
+                echo "<img src='" . $image . "' alt='Resim'>"; // Yerel resimleri ekler
             }
             ?>
         </div>
