@@ -262,8 +262,7 @@ if (isset($_SESSION['username'])) {
         // Kullanıcının yazdığı mesaja göre cevaplar
         const botReplies = {
             "merhaba": "Merhaba! Size nasıl yardımcı olabilirim?",
-            "nur nasıl biri": "Salak Aptal mal biri böyle kişilere itibar etmeyin DOMUZ",
-            "ürünler": "Ürünlerimizi görmek için <a href='products.php'>buraya tıklayın</a>.",
+            
             "iletişim": "Bizimle iletişime geçmek için <a href='contact.php'>İletişim Sayfası</a>'nı ziyaret edebilirsiniz.",
             "indirim": "İndirimlerimiz için <a href='suprize.php'>buraya göz atın</a>.",
             "hakkımızda": "Hakkımızda bilgi almak için <a href='about.php'>buraya tıklayın</a>.",

@@ -21,36 +21,58 @@ if ($baglanti->connect_error) {
 // İndirim kodu oluşturma
 $discountCode = '';
 $discountPercentage = 0;
+$usageLimit = 0;
+$customWord = '';
 $successMessage = '';
 $errorMessage = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $codeLength = 10; // Kod uzunluğu
-    $discountCode = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, $codeLength);
-    $discountPercentage = intval($_POST['discount_percentage']); // Yüzdeyi al
+    $customWord = strtoupper(trim($_POST['custom_word'])); // Özel kelime
+    $discountPercentage = intval($_POST['discount_percentage']); // İndirim yüzdesi
+    $usageLimit = intval($_POST['usage_limit']); // Kullanım limiti
 
-    // Veritabanına kaydetme işlemi
-    $sql = "INSERT INTO discount_codes (code, discount_percentage, used) VALUES (?, ?, 0)";
-    $stmt = $baglanti->prepare($sql);
-
-    if ($stmt) {
-        $stmt->bind_param("si", $discountCode, $discountPercentage);
-
-        if ($stmt->execute()) {
-            $successMessage = "Yeni indirim kodu oluşturuldu: $discountCode (%$discountPercentage)";
-        } else {
-            $errorMessage = "Kod kaydedilemedi: " . $stmt->error;
-        }
-
-        $stmt->close();
+    // Özel kelime boşsa rastgele bir kod oluştur
+    if (empty($customWord)) {
+        $codeLength = 10;
+        $discountCode = substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, $codeLength);
     } else {
-        $errorMessage = "Sorgu hazırlanamadı: " . $baglanti->error;
+        $discountCode = $customWord;
+    }
+
+    // Benzersizlik kontrolü
+    $checkSql = "SELECT COUNT(*) FROM discount_codes WHERE code = ?";
+    $checkStmt = $baglanti->prepare($checkSql);
+    $checkStmt->bind_param("s", $discountCode);
+    $checkStmt->execute();
+    $checkStmt->bind_result($count);
+    $checkStmt->fetch();
+    $checkStmt->close();
+
+    if ($count > 0) {
+        $errorMessage = "Bu kod zaten mevcut, lütfen başka bir kod deneyin.";
+    } else {
+        // Veritabanına kaydetme işlemi
+        $sql = "INSERT INTO discount_codes (code, discount_percentage, usage_limit, used) VALUES (?, ?, ?, 0)";
+        $stmt = $baglanti->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("sii", $discountCode, $discountPercentage, $usageLimit);
+
+            if ($stmt->execute()) {
+                $successMessage = "Yeni indirim kodu oluşturuldu: $discountCode (%$discountPercentage) - Kullanım Limiti: $usageLimit";
+            } else {
+                $errorMessage = "Kod kaydedilemedi: " . $stmt->error;
+            }
+
+            $stmt->close();
+        } else {
+            $errorMessage = "Sorgu hazırlanamadı: " . $baglanti->error;
+        }
     }
 }
 
 $baglanti->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -120,7 +142,7 @@ $baglanti->close();
             border-radius: 5px;
         }
 
-        .discount-container input[type="number"] {
+        .discount-container input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -136,6 +158,8 @@ $baglanti->close();
 
         <form method="POST">
             <input type="number" name="discount_percentage" placeholder="İndirim Yüzdesi (1-100)" required min="1" max="100">
+            <input type="number" name="usage_limit" placeholder="Kullanım Limiti" required min="1">
+            <input type="text" name="custom_word" placeholder="Özel Kelime (Opsiyonel)">
             <button type="submit">Yeni İndirim Kodu Oluştur</button>
         </form>
 
