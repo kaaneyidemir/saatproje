@@ -1,7 +1,7 @@
 <?php
 session_start(); // Oturum başlatılıyor
 
-// SEPETİ HER SAYFA AÇILIŞINDA SIFIRLA (İsteğe bağlı)
+// SEPETİ HER SAYFA AÇILIŞINDA SIFIRLA (isteğe bağlı)
 if (!isset($_SESSION['cart_initialized'])) {
     $_SESSION['cart'] = [];
     $_SESSION['cart_initialized'] = true;
@@ -42,7 +42,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Kartların düzeni */
+        /* Genel Kart Tasarımları */
         .card-deck {
             display: flex;
             flex-wrap: wrap;
@@ -51,87 +51,95 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
         }
 
         .card {
-            width: 20%;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-        }
+    width: 20%;
+    border: none; /* Çerçeve kaldırıldı */
+    border-radius: 16px; /* Köşeleri daha yuvarlak */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Daha belirgin gölge */
+    overflow: hidden; /* İçeriğin taşmasını engelle */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0); /* Hafif degrade arka plan */
+}
 
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
+.card:hover {
+    transform: scale(1.07); /* Hover sırasında büyüme */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* Hover gölge efekti */
+}
 
-        .card img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-bottom: 1px solid #ddd;
-        }
+.card img {
+    width: 100%;
+    height: 250px; /* Görsel yüksekliği küçültüldü */
+    object-fit: cover; /* Görseli düzgün kırp */
+    border-bottom: 1px solid #ddd;
+}
 
-        .card-body {
-            flex-grow: 1;
-            padding: 25px;
-        }
+.card-body {
+    flex-grow: 1;
+    padding: 20px; /* İç margin */
+    text-align: center; /* Metin ortalanıyor */
+}
 
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
+.card-title {
+    font-size: 1.4rem; /* Başlık büyütüldü */
+    font-weight: bold;
+    color: #333; /* Başlık rengi */
+    margin-bottom: 10px;
+}
 
-        .card-text {
-            font-size: 1rem;
-            margin: 10px 0;
-        }
+.card-text {
+    font-size: 1rem; /* Açıklama boyutu ayarlandı */
+    margin: 10px 0;
+    color: #555; /* Açıklama rengi */
+}
 
-        .price {
-            font-size: 1.1rem;
-            color: #28a745;
-            font-weight: bold;
-        }
+.price {
+    font-size: 1.2rem; /* Fiyat büyütüldü */
+    color: #28a745; /* Yeşil ton korundu */
+    font-weight: bold;
+    margin: 15px 0;
+}
 
-        .card-footer {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+.card-footer {
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-        .btn-add-to-cart {
-            display: inline-block;
-            padding: 8px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
+.btn-add-to-cart {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color:rgb(21, 114, 0); /* Buton rengi mavi yapıldı */
+    color: white;
+    border: none;
+    border-radius: 20px; /* Yuvarlak buton */
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
 
-        .btn-add-to-cart:hover {
-            background-color: #218838;
-        }
+.btn-add-to-cart:hover {
+    background-color: #0056b3; /* Daha koyu mavi */
+    transform: translateY(-3px); /* Hover animasyonu */
+}
 
-        /* Responsive düzenlemeler */
-        @media (max-width: 1200px) {
-            .card {
-                width: 30%;
-            }
-        }
+@media (max-width: 1200px) {
+    .card {
+        width: 30%;
+    }
+}
 
-        @media (max-width: 768px) {
-            .card {
-                width: 45%;
-            }
-        }
+@media (max-width: 768px) {
+    .card {
+        width: 45%;
+    }
+}
 
-        @media (max-width: 480px) {
-            .card {
-                width: 100%;
-            }
-        }
+@media (max-width: 480px) {
+    .card {
+        width: 100%;
+    }
+}
+
 
         /* Hoşgeldiniz Bildirimi */
         .welcome-notification {
@@ -174,9 +182,9 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
             
             <?php if ($is_admin): ?>
                 <a href="addproducts.php"><button>Ürün Ekle</button></a>
-                <a href="orders.php"><button>Sipariş Onayla</button></a> <!-- Admin'e özel sipariş onay butonu -->
+                <a href="orders.php"><button>Sipariş Onayla</button></a>
             <?php else: ?>
-                <a href="orders.php"><button>Siparişlerim</button></a> <!-- Kullanıcıya özel siparişlerim -->
+                <a href="orders.php"><button>Siparişlerim</button></a>
             <?php endif; ?>
         <?php else: ?>
             <a href="login.php"><i class="fa-regular fa-user"></i></a>
@@ -199,13 +207,12 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
             Hoşgeldiniz, <?php echo htmlspecialchars($username); ?>!
         </div>
         <script>
-            // Bildirimi göstermek için JavaScript
             window.onload = function() {
                 const notification = document.getElementById('welcomeNotification');
-                notification.classList.add('show'); // Bildirimi göster
+                notification.classList.add('show');
                 setTimeout(function() {
-                    notification.classList.remove('show'); // 5 saniye sonra bildirimi gizle
-                }, 5000); // 5 saniye sonra kaybolacak
+                    notification.classList.remove('show');
+                }, 5000);
             };
         </script>
     <?php endif; ?>
@@ -262,10 +269,10 @@ function addToCart(productId) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert("Ürün sepete eklendi!");
+            alert("\u00dcr\u00fcn sepete eklendi!");
             document.getElementById("cart-count").innerText = data.count;
         } else {
-            alert("Ürün sepete eklenirken bir hata oluştu!");
+            alert("\u00dcr\u00fcn sepete eklenirken bir hata olu\u015ftu!");
         }
     })
     .catch(error => console.error('Hata:', error));
@@ -273,4 +280,4 @@ function addToCart(productId) {
 </script>
 
 </body>
-</html>
+</html

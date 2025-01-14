@@ -265,6 +265,7 @@ if (isset($_SESSION['username'])) {
             
             "iletişim": "Bizimle iletişime geçmek için <a href='contact.php'>İletişim Sayfası</a>'nı ziyaret edebilirsiniz.",
             "indirim": "İndirimlerimiz için <a href='suprize.php'>buraya göz atın</a>.",
+            "İNDİRİM": "İndirimlerimiz için <a href='suprize.php'>buraya göz atın</a>.",
             "hakkımızda": "Hakkımızda bilgi almak için <a href='about.php'>buraya tıklayın</a>.",
             "yardım": "Sıkça sorulan sorulara göz atmak için <a href='sss.php'>burayı ziyaret edin</a>.",
             "giriş": "Hesabınıza giriş yapmak için <a href='login.php'>Giriş Yap</a> sayfasına gidin.",
